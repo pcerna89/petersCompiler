@@ -1,5 +1,5 @@
 // Created by Peter Cerna
-// header file for input file class
+// InputFile.hpp
 
 #ifndef INPUTFILE_H // include guard
 #define INPUTFILE_H
