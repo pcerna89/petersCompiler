@@ -54,6 +54,25 @@ enum CharClass {
     NOT,
     NEWLINE,
 };
+enum ReservedWord{
+    CLASS,
+    CONST,
+    VAR,
+    CALL,
+    PROCEDURE,
+    IF,
+    WHILE,
+    THEN,
+    DO,
+    ODD
+};
+
+enum DoubleCharOperator{
+    EQUAL_EQUAL,
+    GREATER_EQUAL,
+    LESS_EQUAL,
+    NOT_EQUAL,
+};
 
 const int TOTAL_STATES = 27; 
 const int CHAR_CLASSES = 19;
