@@ -4,6 +4,7 @@
 #define LEXER_H
 
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 #include <vector>
 #include <string>

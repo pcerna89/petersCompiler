@@ -52,7 +52,6 @@ ReservedWord reservedWordFromString(const string &lexeme){
     return static_cast<ReservedWord>(-1); // return invalid enum value
 }
 
-
 // function to classify and update the current state
 // returns the new state based on the current state and input character
 LexerState nextState(LexerState currentState, char inputCharacter){
@@ -115,15 +114,6 @@ LexerState nextState(LexerState currentState, char inputCharacter){
     return static_cast<LexerState>(stateTransitionTable[currentState][charClass]);
 }
 
-string trim(const string &str){
-    size_t first = str.find_first_not_of(' ');
-    if (string::npos == first){
-        return str;
-    }
-    size_t last = str.find_last_not_of(' ');
-    return str.substr(first, (last - first + 1));
-}
-
 vector<Token> readAndClassifyTokens(const string &filename){
     vector<Token> tokens;
     ifstream file(filename);
@@ -134,21 +124,20 @@ vector<Token> readAndClassifyTokens(const string &filename){
 
     if (!file.is_open()){
         cerr << "Error opening file '" << filename << "'" << endl;
-        return tokens; // return empty vector in case of failure
-
     }
     while (file.get(c)){
-        nextLexerState = nextState(currentState, c);
+        // trash and kill myself NO LET ME DIE IN SHAME
+        // to do: change file reading into string char by char
+        // switch statements instead of these god awful if else statements
+        // does get (c) read the whitespace and cause it to skip the next?
+        nextLexerState = nextState(currentState, c); 
 
         if (nextLexerState == START){ // checking if we are at start
             if (!currentLexeme.empty()){
-                currentLexeme = trim(currentLexeme);
-                if (!currentLexeme.empty()){
-                    string tokenType = lexerStateToString(currentState);
-                    tokens.push_back({tokenType, currentLexeme});
-                }
-                currentLexeme.clear();
+                string tokenType = lexerStateToString(currentState);
+                tokens.push_back({tokenType, currentLexeme});
             }
+            currentLexeme.clear();
         }
         else if (nextLexerState == ERROR_ACCEPT){
             cerr << "Error: Invalid token '" << currentLexeme << "'" << endl;
@@ -156,87 +145,159 @@ vector<Token> readAndClassifyTokens(const string &filename){
             currentLexeme.clear();
         }
         else if (nextLexerState == INT_HOLD){
-
+            currentLexeme += c;
         }
         else if (nextLexerState == INT_ACCEPT){
+            tokens.push_back({"NUMERIC LITERAL", (currentLexeme)});
+            currentLexeme.clear();
 
         }
         else if (nextLexerState == VAR_HOLD){
-            
+            currentLexeme += c;
         }
         else if (nextLexerState == VAR_ACCEPT){
-            
+            ReservedWord reservedWord = reservedWordFromString(currentLexeme);
+            if (reservedWord != static_cast<ReservedWord>(-1)){
+                switch (reservedWord){
+                    case CLASS:
+                        tokens.push_back({"$CLASS", currentLexeme});
+                        break;
+                    case CONST:
+                        tokens.push_back({"$CONST", currentLexeme});
+                        break;
+                    case VAR:
+                        tokens.push_back({"$VAR", currentLexeme});
+                        break;
+                    case CALL:
+                        tokens.push_back({"$CALL", currentLexeme});
+                        break;
+                    case PROCEDURE:
+                        tokens.push_back({"$PROCEDURE", currentLexeme});
+                        break;
+                    case IF:
+                        tokens.push_back({"$IF", currentLexeme});
+                        break;
+                    case WHILE:
+                        tokens.push_back({"$WHILE", currentLexeme});
+                        break;
+                    case THEN:
+                        tokens.push_back({"$THEN", currentLexeme});
+                        break;
+                    case DO:
+                        tokens.push_back({"$DO", currentLexeme});
+                        break;
+                    case ODD:
+                        tokens.push_back({"$ODD", currentLexeme});
+                        break;
+                    default:
+                        break;
+                }
+            }
+            else {
+                tokens.push_back({"IDENTIFIER", currentLexeme});
+            // need to do const vars
+            }
+            currentLexeme.clear();
         }
         else if (nextLexerState == OP_ACCEPT){
-            
+            if (currentLexeme == "+"){
+                tokens.push_back({"$ADD", currentLexeme});
+            }
+            else if (currentLexeme == "-"){
+                tokens.push_back({"$SUB", currentLexeme});
+            }
+            else if (currentLexeme == "*"){
+                tokens.push_back({"$MUL", currentLexeme});
+            }
+            currentLexeme.clear();
         }
         else if (nextLexerState == SLASH_HOLD){
-            
+            currentLexeme += c;
         }
         else if (nextLexerState == DIVOP_ACCEPT){
-            
+            tokens.push_back({"$DIV", currentLexeme});
+            currentLexeme.clear();
         }
         else if (nextLexerState == COMMENT_HOLD){
-            
+            // do nothing
         }
         else if (nextLexerState == COMMENT_END){
-            
+            currentLexeme.clear();
         }
         else if (nextLexerState == EQUALS_HOLD){
-            
+            currentLexeme += c;
         }
         else if (nextLexerState == ASSIGNMENT_ACCEPT){
-            
+            tokens.push_back({"$ASSIGNMENT", currentLexeme});
+            currentLexeme.clear();
         }
         else if (nextLexerState == EQUALITY_ACCEPT){
-            
+            tokens.push_back({"$EQUALS", currentLexeme});
+            currentLexeme.clear();
         }
         else if (nextLexerState == LESSER_HOLD){
-            
+            currentLexeme += c;
         }
         else if (nextLexerState == LESSER_ACCEPT){
-            
+            tokens.push_back({"$LESSER", currentLexeme});
+            currentLexeme.clear();
         }
         else if (nextLexerState == LESS_OR_EQUAL_ACCEPT){
-            
+            tokens.push_back({"$LESS EQUALS", currentLexeme});
+            currentLexeme.clear();
         }
         else if (nextLexerState == GREATER_HOLD){
-            
+            currentLexeme += c;   
         }
         else if (nextLexerState == GREATER_ACCEPT){
-            
+            tokens.push_back({"$GREATER", currentLexeme});
+            currentLexeme.clear();
         }
         else if (nextLexerState == GREATER_OR_EQUAL_ACCEPT){
-            
+            tokens.push_back({"$GREATER EQUALS", currentLexeme});
+            currentLexeme.clear();
         }
         else if (nextLexerState == PARENTHESES_ACCEPT){
-            
+            if (currentLexeme == "("){
+                tokens.push_back({"$LP", currentLexeme});
+            }
+            else if (currentLexeme == ")"){
+                tokens.push_back({"$RP", currentLexeme});
+            }
+            currentLexeme.clear();
         }
         else if (nextLexerState == BRACES_ACCEPT){
-            
+            if (currentLexeme == "{"){
+                tokens.push_back({"$RB", currentLexeme});
+            }
+            else if (currentLexeme == "}"){
+                tokens.push_back({"$LB", currentLexeme});
+            }
+            currentLexeme.clear();
         }
         else if (nextLexerState == SEMI_ACCEPT){
-            
+            tokens.push_back({"$SEMI", currentLexeme});
+            currentLexeme.clear();
         }
         else if (nextLexerState == COMMA_ACCEPT){
-            
+            tokens.push_back({"$COMMA", currentLexeme});
+            currentLexeme.clear();
         }
         else if (nextLexerState == NOT_HOLD){
-            
+            currentLexeme += c;
         }
         else if (nextLexerState == NOT_ACCEPT){
-            
+            tokens.push_back({"$NOT", currentLexeme});
+            currentLexeme.clear();
         }
         else if (nextLexerState == NOT_EQUAL_ACCEPT){
-            
+            tokens.push_back({"$NOT EQUALS", currentLexeme});
+            currentLexeme.clear();
         }
-
         else {
             // for non start states and non error states
             currentLexeme += c;
         }
-
-
         currentState = nextLexerState;
     }
     if (!currentLexeme.empty()){

@@ -67,12 +67,6 @@ enum ReservedWord{
     ODD
 };
 
-enum DoubleCharOperator{
-    EQUAL_EQUAL,
-    GREATER_EQUAL,
-    LESS_EQUAL,
-    NOT_EQUAL,
-};
 
 const int TOTAL_STATES = 27; 
 const int CHAR_CLASSES = 19;
