@@ -9,6 +9,7 @@
 #include <vector>
 #include <string>
 #include "StateTransitionTable.h"
+#include "FileReader.h"
 
 using namespace std;
 
@@ -16,8 +17,22 @@ struct Token {
     string type;
     string lexeme;
 };
-string lexerStateToString(LexerState state);
-LexerState nextState(LexerState currentState, char inputCharacter);
-vector<Token> readAndClassifyTokens(const string &filename);
+
+class Lexer {
+    public:
+    Lexer(const string &filename);
+    vector<Token> tokenize(); // main method to tokenize the input file
+
+    private:
+    FileReader fileReader; // handles file input
+    vector<Token> tokens; // stores the tokens
+    string currentLexeme = ""; // stores the current lexeme
+
+    // helper methods
+    CharClass classifyChar(char c);
+    void addToken(const string &type, const string &lexeme);
+    LexerState getNextState(LexerState currentState, CharClass charClass);
+    string lexerStateToString(LexerState state);
+};
 
 #endif // LEXER_H

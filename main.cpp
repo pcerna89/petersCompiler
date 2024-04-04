@@ -2,15 +2,22 @@
 // main.cpp by Peter Cerna
 #include "StateTransitionTable.h"
 #include "Lexer.h"
+#include "FileReader.h"
 
 using namespace std;
 
 int main(){
     initializeStateTransitionTable();
-    auto tokens = readAndClassifyTokens("sampleJava0.txt");
-    cout << "Tokens:" << "------------" << "Lexemes:" << endl;
+
+    Lexer lexer("sampleJava0.txt");
+
+    vector<Token> tokens = lexer.tokenize();
+
+    cout << left << setw(30) << "Lexemes" << "Tokens" << endl;
+    cout << "-----------------------------" << endl;
+
     for (const auto &token : tokens){
-        cout << "Token: " << token.type << ", Lexeme: '" << token.lexeme << "'" << endl;
+        cout << left << setw(30) <<  token.lexeme << token.type << endl;
     }
 
     return 0;
