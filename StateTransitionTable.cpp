@@ -2,9 +2,10 @@
 // StateTransitionTable.cpp by Peter Cerna
 #include "StateTransitionTable.h"
 
-int stateTransitionTable [TOTAL_STATES][CHAR_CLASSES];
+int stateTransitionTable [TOTAL_STATES][CHAR_CLASSES]; // state transition table
 
-void initializeStateTransitionTable(){
+void initializeStateTransitionTable(){ // initializes the state transition table
+    // start state transitions
     stateTransitionTable[START][WHITESPACE] = START;
     stateTransitionTable[START][OTHER] = ERROR_ACCEPT;
     stateTransitionTable[START][DIGIT] = INT_HOLD;
@@ -25,6 +26,7 @@ void initializeStateTransitionTable(){
     stateTransitionTable[START][NOT] = NOT_HOLD;
     stateTransitionTable[START][NEWLINE] = START;
 
+    // error accept state transitions
     stateTransitionTable[ERROR_ACCEPT][WHITESPACE] = START;
     stateTransitionTable[ERROR_ACCEPT][OTHER] = START;
     stateTransitionTable[ERROR_ACCEPT][DIGIT] = START;
@@ -45,6 +47,7 @@ void initializeStateTransitionTable(){
     stateTransitionTable[ERROR_ACCEPT][NOT] = START;
     stateTransitionTable[ERROR_ACCEPT][NEWLINE] = START;
 
+    // integer hold state transitions
     stateTransitionTable[INT_HOLD][WHITESPACE] = INT_ACCEPT;
     stateTransitionTable[INT_HOLD][OTHER] = INT_ACCEPT;
     stateTransitionTable[INT_HOLD][DIGIT] = INT_HOLD;
@@ -64,7 +67,8 @@ void initializeStateTransitionTable(){
     stateTransitionTable[INT_HOLD][COMMA] = INT_ACCEPT;
     stateTransitionTable[INT_HOLD][NOT] = INT_ACCEPT;
     stateTransitionTable[INT_HOLD][NEWLINE] = INT_ACCEPT;
-
+    
+    // integer accept state transitions
     stateTransitionTable[INT_ACCEPT][WHITESPACE] = START;
     stateTransitionTable[INT_ACCEPT][OTHER] = START;
     stateTransitionTable[INT_ACCEPT][DIGIT] = START;
@@ -85,6 +89,7 @@ void initializeStateTransitionTable(){
     stateTransitionTable[INT_ACCEPT][NOT] = START;
     stateTransitionTable[INT_ACCEPT][NEWLINE] = START;
 
+    // variable hold state transitions
     stateTransitionTable[VAR_HOLD][WHITESPACE] = VAR_ACCEPT;
     stateTransitionTable[VAR_HOLD][OTHER] = VAR_ACCEPT;
     stateTransitionTable[VAR_HOLD][DIGIT] = VAR_HOLD;
@@ -105,6 +110,7 @@ void initializeStateTransitionTable(){
     stateTransitionTable[VAR_HOLD][NOT] = VAR_ACCEPT;
     stateTransitionTable[VAR_HOLD][NEWLINE] = VAR_ACCEPT;
 
+    // variable accept state transitions
     stateTransitionTable[VAR_ACCEPT][WHITESPACE] = START;
     stateTransitionTable[VAR_ACCEPT][OTHER] = START;
     stateTransitionTable[VAR_ACCEPT][DIGIT] = START;
@@ -125,6 +131,7 @@ void initializeStateTransitionTable(){
     stateTransitionTable[VAR_ACCEPT][NOT] = START;
     stateTransitionTable[VAR_ACCEPT][NEWLINE] = START;
 
+    // operator accept state transitions
     stateTransitionTable[OP_ACCEPT][WHITESPACE] = START;
     stateTransitionTable[OP_ACCEPT][OTHER] = START;
     stateTransitionTable[OP_ACCEPT][DIGIT] = START;
@@ -145,6 +152,7 @@ void initializeStateTransitionTable(){
     stateTransitionTable[OP_ACCEPT][NOT] = START;
     stateTransitionTable[OP_ACCEPT][NEWLINE] = START;
 
+    // slash hold state transitions
     stateTransitionTable[SLASH_HOLD][WHITESPACE] = DIVOP_ACCEPT;
     stateTransitionTable[SLASH_HOLD][OTHER] = DIVOP_ACCEPT;
     stateTransitionTable[SLASH_HOLD][DIGIT] = DIVOP_ACCEPT;
@@ -165,6 +173,7 @@ void initializeStateTransitionTable(){
     stateTransitionTable[SLASH_HOLD][NOT] = DIVOP_ACCEPT;
     stateTransitionTable[SLASH_HOLD][NEWLINE] = DIVOP_ACCEPT;
 
+    // division operator accept state transitions
     stateTransitionTable[DIVOP_ACCEPT][WHITESPACE] = START;
     stateTransitionTable[DIVOP_ACCEPT][OTHER] = START;
     stateTransitionTable[DIVOP_ACCEPT][DIGIT] = START;
@@ -185,6 +194,7 @@ void initializeStateTransitionTable(){
     stateTransitionTable[DIVOP_ACCEPT][NOT] = START;
     stateTransitionTable[DIVOP_ACCEPT][NEWLINE] = START;
 
+    // comment hold state transitions
     stateTransitionTable[COMMENT_HOLD][WHITESPACE] = COMMENT_HOLD;
     stateTransitionTable[COMMENT_HOLD][OTHER] = COMMENT_HOLD;
     stateTransitionTable[COMMENT_HOLD][DIGIT] = COMMENT_HOLD;
@@ -205,6 +215,7 @@ void initializeStateTransitionTable(){
     stateTransitionTable[COMMENT_HOLD][NOT] = COMMENT_HOLD;
     stateTransitionTable[COMMENT_HOLD][NEWLINE] = COMMENT_HOLD;
 
+    // comment end state transitions
     stateTransitionTable[COMMENT_END][WHITESPACE] = COMMENT_HOLD;
     stateTransitionTable[COMMENT_END][OTHER] = COMMENT_HOLD;
     stateTransitionTable[COMMENT_END][DIGIT] = COMMENT_HOLD;
@@ -225,6 +236,7 @@ void initializeStateTransitionTable(){
     stateTransitionTable[COMMENT_END][NOT] = COMMENT_HOLD;
     stateTransitionTable[COMMENT_END][NEWLINE] = COMMENT_HOLD;
 
+    // equals hold state transitions
     stateTransitionTable[EQUALS_HOLD][WHITESPACE] = ASSIGNMENT_ACCEPT;
     stateTransitionTable[EQUALS_HOLD][OTHER] = ASSIGNMENT_ACCEPT;
     stateTransitionTable[EQUALS_HOLD][DIGIT] = ASSIGNMENT_ACCEPT;
@@ -245,6 +257,7 @@ void initializeStateTransitionTable(){
     stateTransitionTable[EQUALS_HOLD][NOT] = ASSIGNMENT_ACCEPT;
     stateTransitionTable[EQUALS_HOLD][NEWLINE] = ASSIGNMENT_ACCEPT;
 
+    // assignment accept state transitions
     stateTransitionTable[ASSIGNMENT_ACCEPT][WHITESPACE] = START;
     stateTransitionTable[ASSIGNMENT_ACCEPT][OTHER] = START;
     stateTransitionTable[ASSIGNMENT_ACCEPT][DIGIT] = START;
@@ -265,6 +278,7 @@ void initializeStateTransitionTable(){
     stateTransitionTable[ASSIGNMENT_ACCEPT][NOT] = START;
     stateTransitionTable[ASSIGNMENT_ACCEPT][NEWLINE] = START;
 
+    // equality accept state transitions
     stateTransitionTable[EQUALITY_ACCEPT][WHITESPACE] = START;
     stateTransitionTable[EQUALITY_ACCEPT][OTHER] = START;
     stateTransitionTable[EQUALITY_ACCEPT][DIGIT] = START;
@@ -285,6 +299,7 @@ void initializeStateTransitionTable(){
     stateTransitionTable[EQUALITY_ACCEPT][NOT] = START;
     stateTransitionTable[EQUALITY_ACCEPT][NEWLINE] = START;
 
+    // lesser hold state transitions
     stateTransitionTable[LESSER_HOLD][WHITESPACE] = LESSER_ACCEPT;
     stateTransitionTable[LESSER_HOLD][OTHER] = LESSER_ACCEPT;
     stateTransitionTable[LESSER_HOLD][DIGIT] = LESSER_ACCEPT;
@@ -305,6 +320,7 @@ void initializeStateTransitionTable(){
     stateTransitionTable[LESSER_HOLD][NOT] = LESSER_ACCEPT;
     stateTransitionTable[LESSER_HOLD][NEWLINE] = LESSER_ACCEPT;
 
+    // lesser accept state transitions
     stateTransitionTable[LESSER_ACCEPT][WHITESPACE] = START;
     stateTransitionTable[LESSER_ACCEPT][OTHER] = START;
     stateTransitionTable[LESSER_ACCEPT][DIGIT] = START;
@@ -325,6 +341,7 @@ void initializeStateTransitionTable(){
     stateTransitionTable[LESSER_ACCEPT][NOT] = START;
     stateTransitionTable[LESSER_ACCEPT][NEWLINE] = START;
 
+    // less or equal accept state transitions
     stateTransitionTable[LESS_OR_EQUAL_ACCEPT][WHITESPACE] = START;
     stateTransitionTable[LESS_OR_EQUAL_ACCEPT][OTHER] = START;
     stateTransitionTable[LESS_OR_EQUAL_ACCEPT][DIGIT] = START;
@@ -345,6 +362,7 @@ void initializeStateTransitionTable(){
     stateTransitionTable[LESS_OR_EQUAL_ACCEPT][NOT] = START;
     stateTransitionTable[LESS_OR_EQUAL_ACCEPT][NEWLINE] = START;
 
+    // greater hold state transitions
     stateTransitionTable[GREATER_HOLD][WHITESPACE] = GREATER_ACCEPT;
     stateTransitionTable[GREATER_HOLD][OTHER] = GREATER_ACCEPT;
     stateTransitionTable[GREATER_HOLD][DIGIT] = GREATER_ACCEPT;
@@ -365,6 +383,7 @@ void initializeStateTransitionTable(){
     stateTransitionTable[GREATER_HOLD][NOT] = GREATER_ACCEPT;
     stateTransitionTable[GREATER_HOLD][NEWLINE] = GREATER_ACCEPT;
 
+    // greater accept state transitions
     stateTransitionTable[GREATER_ACCEPT][WHITESPACE] = START;
     stateTransitionTable[GREATER_ACCEPT][OTHER] = START;
     stateTransitionTable[GREATER_ACCEPT][DIGIT] = START;
@@ -385,6 +404,7 @@ void initializeStateTransitionTable(){
     stateTransitionTable[GREATER_ACCEPT][NOT] = START;
     stateTransitionTable[GREATER_ACCEPT][NEWLINE] = START;
 
+    // greater or equal accept state transitions
     stateTransitionTable[GREATER_OR_EQUAL_ACCEPT][WHITESPACE] = START;
     stateTransitionTable[GREATER_OR_EQUAL_ACCEPT][OTHER] = START;
     stateTransitionTable[GREATER_OR_EQUAL_ACCEPT][DIGIT] = START;
@@ -405,6 +425,7 @@ void initializeStateTransitionTable(){
     stateTransitionTable[GREATER_OR_EQUAL_ACCEPT][NOT] = START;
     stateTransitionTable[GREATER_OR_EQUAL_ACCEPT][NEWLINE] = START;
     
+    // parentheses accept state transitions
     stateTransitionTable[PARENTHESES_ACCEPT][WHITESPACE] = START;
     stateTransitionTable[PARENTHESES_ACCEPT][OTHER] = START;
     stateTransitionTable[PARENTHESES_ACCEPT][DIGIT] = START;
@@ -425,6 +446,7 @@ void initializeStateTransitionTable(){
     stateTransitionTable[PARENTHESES_ACCEPT][NOT] = START;
     stateTransitionTable[PARENTHESES_ACCEPT][NEWLINE] = START;
 
+    // braces accept state transitions
     stateTransitionTable[BRACES_ACCEPT][WHITESPACE] = START;
     stateTransitionTable[BRACES_ACCEPT][OTHER] = START;
     stateTransitionTable[BRACES_ACCEPT][DIGIT] = START;
@@ -445,6 +467,7 @@ void initializeStateTransitionTable(){
     stateTransitionTable[BRACES_ACCEPT][NOT] = START;
     stateTransitionTable[BRACES_ACCEPT][NEWLINE] = START;
 
+    // semicolon accept state transitions
     stateTransitionTable[SEMI_ACCEPT][WHITESPACE] = START;
     stateTransitionTable[SEMI_ACCEPT][OTHER] = START;
     stateTransitionTable[SEMI_ACCEPT][DIGIT] = START;
@@ -465,6 +488,7 @@ void initializeStateTransitionTable(){
     stateTransitionTable[SEMI_ACCEPT][NOT] = START;
     stateTransitionTable[SEMI_ACCEPT][NEWLINE] = START;
 
+    // comma accept state transitions
     stateTransitionTable[COMMA_ACCEPT][WHITESPACE] = START;
     stateTransitionTable[COMMA_ACCEPT][OTHER] = START;
     stateTransitionTable[COMMA_ACCEPT][DIGIT] = START;
@@ -485,6 +509,7 @@ void initializeStateTransitionTable(){
     stateTransitionTable[COMMA_ACCEPT][NOT] = START;
     stateTransitionTable[COMMA_ACCEPT][NEWLINE] = START;
 
+    // not hold state transitions
     stateTransitionTable[NOT_HOLD][WHITESPACE] = NOT_ACCEPT;
     stateTransitionTable[NOT_HOLD][OTHER] = NOT_ACCEPT;
     stateTransitionTable[NOT_HOLD][DIGIT] = NOT_ACCEPT;
@@ -505,6 +530,7 @@ void initializeStateTransitionTable(){
     stateTransitionTable[NOT_HOLD][NOT] = NOT_ACCEPT;
     stateTransitionTable[NOT_HOLD][NEWLINE] = NOT_ACCEPT;
     
+    // not accept state transitions
     stateTransitionTable[NOT_ACCEPT][WHITESPACE] = START;
     stateTransitionTable[NOT_ACCEPT][OTHER] = START;
     stateTransitionTable[NOT_ACCEPT][DIGIT] = START;
@@ -525,6 +551,7 @@ void initializeStateTransitionTable(){
     stateTransitionTable[NOT_ACCEPT][NOT] = START;
     stateTransitionTable[NOT_ACCEPT][NEWLINE] = START;
 
+    // not equal accept state transitions
     stateTransitionTable[NOT_EQUAL_ACCEPT][WHITESPACE] = START;
     stateTransitionTable[NOT_EQUAL_ACCEPT][OTHER] = START;
     stateTransitionTable[NOT_EQUAL_ACCEPT][DIGIT] = START;

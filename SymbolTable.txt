@@ -1,0 +1,35 @@
+
+Symbol Table
+Symbol:                       Classification:     Value:    Address:  Segment:
+LargestCommonDenominator      $PROGRAM NAME                 0         CS
+M                             CONST VAR           7         0         DS
+N                             CONST VAR           85        2         DS
+X                             VAR                 ?         4         DS
+Y                             VAR                 ?         6         DS
+Z                             VAR                 ?         8         DS
+Q                             VAR                 ?         10        DS
+R                             VAR                 ?         12        DS
+Multiply                      PROCEDURE           ?         2         CS
+A                             VAR                 ?         14        DS
+B                             VAR                 ?         16        DS
+0                             NUMERIC LITERAL     0         18        DS
+0                             NUMERIC LITERAL     0         20        DS
+2                             NUMERIC LITERAL     2         22        DS
+2                             NUMERIC LITERAL     2         24        DS
+Divide                        PROCEDURE           ?         4         CS
+W                             VAR                 ?         26        DS
+0                             NUMERIC LITERAL     0         28        DS
+2                             NUMERIC LITERAL     2         30        DS
+2                             NUMERIC LITERAL     2         32        DS
+2                             NUMERIC LITERAL     2         34        DS
+1                             NUMERIC LITERAL     1         36        DS
+GCD                           PROCEDURE           ?         6         CS
+F                             VAR                 ?         38        DS
+G                             VAR                 ?         40        DS
+25                            NUMERIC LITERAL     25        42        DS
+3                             NUMERIC LITERAL     3         44        DS
+84                            NUMERIC LITERAL     84        46        DS
+36                            NUMERIC LITERAL     36        48        DS
+Temp1                         VAR(int)                      50        DS
+Temp2                         VAR(int)                      52        DS
+Temp3                         VAR(int)                      54        DS

@@ -13,12 +13,12 @@
 
 using namespace std;
 
-struct Token {
+struct Token { // stores the token type and lexeme
     string type;
     string lexeme;
 };
 
-class Lexer {
+class Lexer { // tokenizes the input file
     public:
     Lexer(const string &filename);
     vector<Token> tokenize(); // main method to tokenize the input file
@@ -29,10 +29,10 @@ class Lexer {
     string currentLexeme = ""; // stores the current lexeme
 
     // helper methods
-    CharClass classifyChar(char c);
-    void addToken(const string &type, const string &lexeme);
-    LexerState getNextState(LexerState currentState, CharClass charClass);
-    string lexerStateToString(LexerState state);
+    CharClass classifyChar(char c); // classifies the character
+    void addToken(const string &type, const string &lexeme); // adds a token to the token list
+    LexerState getNextState(LexerState currentState, CharClass charClass); // gets the next state
+    string lexerStateToString(LexerState state); // converts the lexer state to a string
 };
 
 #endif // LEXER_H

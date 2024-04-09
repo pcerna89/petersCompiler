@@ -2,8 +2,12 @@
 // StateTransitionTable.h by Peter Cerna
 #ifndef STATE_TRANSITION_TABLE_H
 #define STATE_TRANSITION_TABLE_H
+#include <vector>
+#include <string>
+using namespace std;
+extern vector<string> ReservedWord; // stores the reserved words
 
-enum LexerState {
+enum LexerState { // our different lexer states
     START,
     ERROR_ACCEPT,
     INT_HOLD,
@@ -32,8 +36,7 @@ enum LexerState {
     NOT_ACCEPT,
     NOT_EQUAL_ACCEPT
 };
-
-enum CharClass {
+enum CharClass { // our different character classes
     WHITESPACE,
     OTHER,
     DIGIT,
@@ -54,25 +57,13 @@ enum CharClass {
     NOT,
     NEWLINE,
 };
-enum ReservedWord{
-    CLASS,
-    CONST,
-    VAR,
-    CALL,
-    PROCEDURE,
-    IF,
-    WHILE,
-    THEN,
-    DO,
-    ODD
-};
 
 
 const int TOTAL_STATES = 27; 
 const int CHAR_CLASSES = 19;
 
-extern int stateTransitionTable[TOTAL_STATES][CHAR_CLASSES];
+extern int stateTransitionTable[TOTAL_STATES][CHAR_CLASSES]; // stores the state transitions
 
-void initializeStateTransitionTable();
+void initializeStateTransitionTable(); 
 
 #endif // STATE_TRANSITION_TABLE_H

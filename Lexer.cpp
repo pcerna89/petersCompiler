@@ -6,8 +6,6 @@
 
 using namespace std;
 
-//string currentLexeme = ""; // stores the current lexeme
-
 // initializes the lexer with the filename
 Lexer::Lexer(const string &filename) : fileReader(filename) {}
 
@@ -16,11 +14,32 @@ LexerState Lexer::getNextState(LexerState currentState, CharClass charClass){
     return static_cast<LexerState>(stateTransitionTable[currentState][charClass]); // using our state transition table
 }
 
+vector<string> ReservedWord{ // our reserved words
+    "CLASS",
+    "CONST",
+    "VAR",
+    "CALL",
+    "PROCEDURE",
+    "IF",
+    "WHILE",
+    "THEN",
+    "DO",
+    "ODD"
+};
+
 // function to convert lexer state to string to print for our tokens
 string Lexer::lexerStateToString(LexerState state){
     switch (state){
         case INT_ACCEPT: return "Numeric Literal";
-        case VAR_ACCEPT: return "Identifier";
+        case VAR_ACCEPT: {
+            auto iterator = find(ReservedWord.begin(), ReservedWord.end(), currentLexeme);
+            if (iterator != ReservedWord.end()){
+                return "$" + *iterator;
+            } 
+            else {
+                return "Identifier";
+            }
+        }
         case OP_ACCEPT: 
             if (currentLexeme == "+") return "$Add";
             else if (currentLexeme == "-") return "$Sub";
@@ -46,6 +65,7 @@ string Lexer::lexerStateToString(LexerState state){
     }
 }
 
+// function to classify the character
 CharClass Lexer::classifyChar(char c){
     if (isspace(c)) return WHITESPACE;
     if (isdigit(c)) return DIGIT;
@@ -79,15 +99,13 @@ void Lexer::addToken(const string &type, const string &lexeme){
 // our core
 vector<Token> Lexer::tokenize(){
     char nextChar;
-    //LexerState currentState = START;
-    //tokens.clear();
     const string &code = fileReader.getContent();
     size_t positionInContent = 0;
     LexerState currentState = START;
    
 
     while (positionInContent < code.length()){ // read chars until eof
-        char currentChar = code[positionInContent];
+        char currentChar = code[positionInContent]; // get the current char
         CharClass charClass = classifyChar(currentChar); // classify char
         LexerState nextState = getNextState(currentState, charClass); // determine next state
 
@@ -150,7 +168,7 @@ vector<Token> Lexer::tokenize(){
                 positionInContent++;
                 break;
             case EQUALS_HOLD:
-                currentLexeme += currentChar; // add = to lexeme
+                currentLexeme += currentChar; 
                 currentState = nextState;
                 positionInContent++;
                 break;
@@ -201,28 +219,28 @@ vector<Token> Lexer::tokenize(){
                 positionInContent++;
                 break;
             case PARENTHESES_ACCEPT:
-                currentLexeme = currentChar;
+                currentLexeme += currentChar;
                 addToken(lexerStateToString(PARENTHESES_ACCEPT), currentLexeme);
                 currentLexeme.clear();
                 currentState = START;
                 positionInContent++;
                 break;
             case BRACES_ACCEPT:
-                currentLexeme = currentChar;
+                currentLexeme += currentChar;
                 addToken(lexerStateToString(BRACES_ACCEPT), currentLexeme);
                 currentLexeme.clear();
                 currentState = START;
                 positionInContent++;
                 break;
             case SEMI_ACCEPT:
-                currentLexeme = currentChar;
+                currentLexeme += currentChar;
                 addToken(lexerStateToString(SEMI_ACCEPT), currentLexeme);
                 currentLexeme.clear();
                 currentState = START;
                 positionInContent++;
                 break;
             case COMMA_ACCEPT:
-                currentLexeme = currentChar;
+                currentLexeme += currentChar;
                 addToken(lexerStateToString(COMMA_ACCEPT), currentLexeme);
                 currentLexeme.clear();
                 currentState = START;
@@ -253,9 +271,7 @@ vector<Token> Lexer::tokenize(){
     if (!currentLexeme.empty()){
         addToken(lexerStateToString(currentState), currentLexeme);
     }
-
     addToken("EOF", "EOF");
-
 
     return tokens;
 }

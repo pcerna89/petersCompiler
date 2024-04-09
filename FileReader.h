@@ -1,3 +1,4 @@
+// FileReader.h by Peter Cerna
 #ifndef FILEREADER_H
 #define FILEREADER_H
 
@@ -6,12 +7,12 @@
 
 using namespace std;
 
-class FileReader {
-    public:
-    string content;
-    FileReader(const string &filename);
+class FileReader { // handles file input
+    public: 
+    string content; // stores the content of the file
+    FileReader(const string &filename); 
     const string &getContent() const {
-        return content;
+        return content; 
     }
 };
 

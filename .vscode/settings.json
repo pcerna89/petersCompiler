@@ -5,6 +5,10 @@
         "istream": "cpp",
         "iosfwd": "cpp",
         "fstream": "cpp",
-        "stdexcept": "cpp"
+        "stdexcept": "cpp",
+        "vector": "cpp",
+        "iomanip": "cpp",
+        "xlocbuf": "cpp",
+        "ostream": "cpp"
     }
 }
