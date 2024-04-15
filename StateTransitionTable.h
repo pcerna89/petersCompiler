@@ -58,7 +58,6 @@ enum CharClass { // our different character classes
     NEWLINE,
 };
 
-
 const int TOTAL_STATES = 27; 
 const int CHAR_CLASSES = 19;
 

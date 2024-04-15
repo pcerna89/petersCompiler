@@ -9,7 +9,7 @@ using namespace std;
 int main(){
     initializeStateTransitionTable();
 
-    Lexer lexer("sampleJava0.txt"); // create a lexer object
+    Lexer lexer("pgm1.txt"); // create a lexer object
     vector<Token> tokens = lexer.tokenize(); // tokenize the input file
 
     ofstream tokenFile("TokenList.txt"); // create a file to store the tokens
