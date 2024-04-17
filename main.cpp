@@ -4,6 +4,7 @@
 #include "Lexer.h"
 #include "SymbolTable.h"
 #include "FileReader.h"
+#include "Parser.h"
 using namespace std;
 
 int main(){
@@ -11,6 +12,9 @@ int main(){
 
     Lexer lexer("pgm1.txt"); // create a lexer object
     vector<Token> tokens = lexer.tokenize(); // tokenize the input file
+
+    Parser parser(tokens); // create a parser with the tokens from lexer 
+    parser.parse(); // start parsing the tokens
 
     ofstream tokenFile("TokenList.txt"); // create a file to store the tokens
 

@@ -1,6 +1,7 @@
 
 Symbol Table
 Symbol:                       Classification:     Value:    Address:  Segment:
+program1                      $PROGRAM NAME                 0         CS
 Temp1                         VAR(int)                      0         DS
 Temp2                         VAR(int)                      2         DS
 Temp3                         VAR(int)                      4         DS

@@ -1,12 +1,18 @@
 Token List
 Lexemes:                      Types:
 -----------------------------
-Joe                           Identifier
+CLASS                         $CLASS
+program1                      Identifier
+{                             $LB
+A                             Identifier
 =                             $Assign
 A                             Identifier
+*                             $Mul
+(                             $LP
+A                             Identifier
 +                             $Add
-36                            Numeric Literal
-/                             $Div
-Sam                           Identifier
+B                             Identifier
+)                             $RP
 ;                             $Semi
+}                             $RB
 EOF                           EOF

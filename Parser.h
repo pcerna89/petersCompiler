@@ -3,6 +3,8 @@
 #ifndef PARSER_H
 #define PARSER_H
 #include "Lexer.h"
+#include <stack>
+using namespace std;
 
 enum ParserClass { // our different parser states
     PARSE_SEMI,
@@ -28,14 +30,32 @@ enum ParserClass { // our different parser states
     PARSE_PROC,
     PARSE_ELSE,
     PARSE_GET,
-    PARSE_PUT
+    PARSE_PUT,
+    NON_OP
 };
 
-const int PARSER_STATES = 24;
+const int PARSER_STATES = 25;
 
 extern char ParserTransitionTable[PARSER_STATES][PARSER_STATES];
 
 void initializeParserTransitionTable();
+
+class Parser {
+    public:
+    Parser(const vector<Token> &tokens); // constructor to take our vector of tokens
+    void parse(); // main parsing function
+
+    private:
+    vector<Token> tokens;
+    size_t currentTokenIndex = 0;
+    stack<Token> tokenStack; 
+
+    bool canReduce(); // attempts to ressssduced based on the current state and tokens
+    void reduce(); // reduces the tokens on the stack
+    void processToken(const Token &token); // processes the current token
+    ParserClass mapTokenToParserClass(const Token &token); // converts the token to a parser class
+
+};
 
 
 #endif // PARSER_H
