@@ -162,9 +162,35 @@ void initializeParserTransitionTable(){
 
 Parser::Parser(const vector<Token> &tokens) : tokens(tokens){
 }
+
+void printStack(const stack<Token> &tokenStack){
+    stack<Token> tempStack = tokenStack; // copy the stack to preserve the original
+    vector<Token> tempVector; 
+
+    while (!tempStack.empty()){
+        tempVector.push_back(tempStack.top());
+        tempStack.pop();
+    }
+
+    cout << "Stack Contents:" << endl;
+    for (auto it = tempVector.rbegin(); it != tempVector.rend(); ++it){
+        cout << it->lexeme << endl;
+    }
+    cout << "----------------------" << endl;
+    cout << endl;
+}
+
 bool startProcessing = false; // flag to indicate when to start processing tokens
 
 void Parser::parse(){ // main parse loop
+    initializeParserTransitionTable();
+
+    Token initialOpInStack{"$Semi", ";"};
+    tokenStack.push(initialOpInStack);
+    mostRecentOpInStack = initialOpInStack;
+    cout << "\nPushed initial Schwartz onto the stack.\n" << endl;
+    printStack(tokenStack);
+
     for (const auto &currentToken : tokens){
         if (!startProcessing){
             if (currentToken.lexeme == "{"){
@@ -174,69 +200,78 @@ void Parser::parse(){ // main parse loop
             continue;   
         }
         // check if we can reduce
-        while (canReduce()){
-            cout << "Reduction possible. Attempting to reduce." << endl;
-            //reduce(); // if the relationship between the top two tokens is '<', reduce
-        }
-        cout << "Shifting token: " << currentToken.lexeme << endl;
-        tokenStack.push(currentToken);
+        handleOperator(currentToken);
+
+        printStack(tokenStack);
     }
 }
 
-bool Parser::canReduce(){
-    if (tokenStack.size() < 2) return false; // checking to make sure there are at least 2 tokens on the stack
-    
-    vector<Token> tempStack;
-    bool canReduce = false; // flag to indicate if we can reduce
-
-    // preserve the top token for comparison and continue checking down the stack
-    Token topToken = tokenStack.top();
-    tokenStack.pop();
-    tempStack.push_back(topToken); // push the token onto the temp stack
-
-    ParserClass topTokenClass = mapTokenToParserClass(topToken);
-
-    while (!tokenStack.empty()){
-        Token currentToken = tokenStack.top(); 
-        ParserClass currentTokenClass = mapTokenToParserClass(currentToken);
-        cout << "Considering for reduction: " << currentToken.lexeme << ", " << topToken.lexeme << endl;
-
-        char transition = ParserTransitionTable[currentTokenClass][topTokenClass];
-        cout << "Reduction check: " << (transition == '<' ? "TRUE" : "FALSE") << endl;
-        cout << "tempStack currently contains: " << tempStack.size() << " elements." << endl;
-
-        if (tokenStack.empty()) break; // if the stack is empty, break because we started at the bottom and now we here
+void Parser::handleOperator (const Token &incomingToken){
+    if (isOperator(incomingToken)){
+        char transition = '?';
+        transition = ParserTransitionTable[identifyTokenToParserClass(mostRecentOpInStack)][identifyTokenToParserClass(incomingToken)];
+        cout << "Incoming token: '" << incomingToken.lexeme << "' . Most recent operator in the stack: " << mostRecentOpInStack.lexeme << "\n" << endl;
 
         if (transition == '>'){
-            canReduce = true;
-            break;
+            cout << "Transition found as: " << transition << ". Reducing." << endl;
+            //reduce();
+            tokenStack.push(incomingToken);
         }
-        // move to next token
-        tempStack.push_back(currentToken);
-        tokenStack.pop();
+        else if (transition == '<'){
+            cout << "Transition found as: " << transition << ". Shifting into the stack." << endl;
+            tokenStack.push(incomingToken);
+            mostRecentOpInStack = incomingToken;
+        }
+        else if (transition == '='){
+            cout << "Transition found as: " << transition << ". Removing the last operator from the stack." << endl;
+            tokenStack.push(incomingToken);
+            mostRecentOpInStack = incomingToken;
+        }
     }
-    // now restore the original stack's state for actual reductions
-    while (!tempStack.empty()){
-        tokenStack.push(tempStack.back());
-        tempStack.pop_back();
+    else {
+        cout << "Token "<< incomingToken.lexeme << " is not an operator. Shifting into the stack." << endl;
+        tokenStack.push(incomingToken);
     }
-    return canReduce;
 }
 
 void Parser::reduce(){
-    Token token1 = tokenStack.top();
-    tokenStack.pop();
-    Token token2 = tokenStack.top();
-    tokenStack.pop();
-
-    cout << "Reducing tokens: " << token1.lexeme << " " << token2.lexeme << endl;
+    
 }
 
-void Parser::processToken(const Token &token){
-    cout << "Processed token: " << token.lexeme << endl;
+bool Parser::isOperator(const Token &token){
+    ParserClass tokenClassification = identifyTokenToParserClass(token);
+    switch (tokenClassification){
+        case PARSE_SEMI:
+        case PARSE_ASSIGN:
+        case PARSE_PLUS:
+        case PARSE_MINUS:
+        case PARSE_LEFTPAREN:
+        case PARSE_RIGHTPAREN:
+        case PARSE_MUL:
+        case PARSE_DIV:
+        case PARSE_IF:
+        case PARSE_THEN:
+        case PARSE_ODD:
+        case PARSE_EQUALS:
+        case PARSE_NOTEQUAL:
+        case PARSE_GREATER:
+        case PARSE_LESS:
+        case PARSE_GREATEREQUAL:
+        case PARSE_LESSEQUAL:
+        case PARSE_LEFTBRACE:
+        case PARSE_RIGHTBRACE:
+        case PARSE_CALL:
+        case PARSE_PROC:
+        case PARSE_ELSE:
+        case PARSE_GET:
+        case PARSE_PUT:
+            return true;
+        default:
+            return false;
+    }
 }
 
-ParserClass Parser::mapTokenToParserClass(const Token &token){
+ParserClass Parser::identifyTokenToParserClass(const Token &token){
     if (token.lexeme == ";") return PARSE_SEMI;
     if (token.lexeme == "=") return PARSE_ASSIGN;
     if (token.lexeme == "+") return PARSE_PLUS;

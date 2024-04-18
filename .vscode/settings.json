@@ -9,6 +9,8 @@
         "vector": "cpp",
         "iomanip": "cpp",
         "xlocbuf": "cpp",
-        "ostream": "cpp"
+        "ostream": "cpp",
+        "iostream": "cpp",
+        "stack": "cpp"
     }
 }

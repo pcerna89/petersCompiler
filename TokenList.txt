@@ -4,15 +4,13 @@ Lexemes:                      Types:
 CLASS                         $CLASS
 program1                      Identifier
 {                             $LB
-A                             Identifier
+Joe                           Identifier
 =                             $Assign
 A                             Identifier
-*                             $Mul
-(                             $LP
-A                             Identifier
 +                             $Add
-B                             Identifier
-)                             $RP
+36                            Numeric Literal
+/                             $Div
+Sam                           Identifier
 ;                             $Semi
 }                             $RB
 EOF                           EOF

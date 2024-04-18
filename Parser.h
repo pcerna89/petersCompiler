@@ -46,14 +46,15 @@ class Parser {
     void parse(); // main parsing function
 
     private:
-    vector<Token> tokens;
-    size_t currentTokenIndex = 0;
-    stack<Token> tokenStack; 
+    stack<Token> tokenStack; // stack to hold our tokens
+    vector<Token> tokens; // tokens to be parsed
+    Token mostRecentOpInStack; // most recent operator in the stack
 
-    bool canReduce(); // attempts to ressssduced based on the current state and tokens
+    bool isOperator(const Token &incomingToken); // checks if the token is an operator
+    void handleOperator(const Token &incomingToken); // handles the operator
     void reduce(); // reduces the tokens on the stack
-    void processToken(const Token &token); // processes the current token
-    ParserClass mapTokenToParserClass(const Token &token); // converts the token to a parser class
+
+    ParserClass identifyTokenToParserClass(const Token &token); // converts the token to a parser class
 
 };
 
