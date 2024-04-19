@@ -184,6 +184,34 @@ vector<Symbol> Symbolizer::symbolize(){
     classification = "VAR(int)";
     addSymbol(symbol, classification, value = "", dataAddress, "DS");
     dataAddress += 2;
+    symbol = "Temp4";
+    classification = "VAR(int)";
+    addSymbol(symbol, classification, value = "", dataAddress, "DS");
+    dataAddress += 2;
+    symbol = "Temp5";
+    classification = "VAR(int)";
+    addSymbol(symbol, classification, value = "", dataAddress, "DS");
+    dataAddress += 2;
+    symbol = "Temp6";
+    classification = "VAR(int)";
+    addSymbol(symbol, classification, value = "", dataAddress, "DS");
+    dataAddress += 2;
+    symbol = "Temp7";
+    classification = "VAR(int)";
+    addSymbol(symbol, classification, value = "", dataAddress, "DS");
+    dataAddress += 2;
+    symbol = "Temp8";
+    classification = "VAR(int)";
+    addSymbol(symbol, classification, value = "", dataAddress, "DS");
+    dataAddress += 2;
+    symbol = "Temp9";
+    classification = "VAR(int)";
+    addSymbol(symbol, classification, value = "", dataAddress, "DS");
+    dataAddress += 2;
+    symbol = "Temp10";
+    classification = "VAR(int)";
+    addSymbol(symbol, classification, value = "", dataAddress, "DS");
+    dataAddress += 2;
 
     return symbols;
 }

@@ -214,8 +214,7 @@ void Parser::handleOperator (const Token &incomingToken){
 
         if (transition == '>'){
             cout << "Transition found as: " << transition << ". Reducing." << endl;
-            //reduce();
-            tokenStack.push(incomingToken);
+            reduce();
         }
         else if (transition == '<'){
             cout << "Transition found as: " << transition << ". Shifting into the stack." << endl;
@@ -235,7 +234,43 @@ void Parser::handleOperator (const Token &incomingToken){
 }
 
 void Parser::reduce(){
-    
+    cout << "Token stack size: " << tokenStack.size() << "\n" << endl;
+    if (tokenStack.size() >= 3){
+        stack<Token> tempStack;
+        for (int i = 0; i < 3; i++){
+            tempStack.push(tokenStack.top());
+            tokenStack.pop();
+        }
+        Token rightOperand = tempStack.top();
+        tempStack.pop();
+        Token operatorToken = tempStack.top();
+        tempStack.pop();
+        Token leftOperand = tempStack.top();
+        tempStack.pop();
+
+        if (tempVariableUsedCounter <= 10){
+            Token resultToken;
+            resultToken.type = "TempVariable";
+            resultToken.lexeme = "Temp" + to_string(tempVariableUsedCounter++);
+
+            Quad quad;
+            quad.op = operatorToken.lexeme;
+            quad.arg1 = leftOperand.lexeme;
+            quad.arg2 = rightOperand.lexeme;
+            quad.result = resultToken.lexeme;
+
+            quadStack.push(quad); // push the quad onto the onto the stack
+
+            tokenStack.push(resultToken);
+            cout << "Quad generated : " << quad.op << " " << quad.arg1 << " " << quad.arg2 << " " << quad.result << "\n" << endl;
+        }
+        else {
+            cout << "Error: Out of temporary variables." << endl;
+        }
+    }
+    else {
+        cout << "Error: Not enough tokens to reduce." << endl;
+    }
 }
 
 bool Parser::isOperator(const Token &token){

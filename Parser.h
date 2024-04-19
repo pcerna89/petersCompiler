@@ -39,6 +39,12 @@ const int PARSER_STATES = 25;
 extern char ParserTransitionTable[PARSER_STATES][PARSER_STATES];
 
 void initializeParserTransitionTable();
+struct Quad { // stores the quadruple
+    string op;
+    string arg1;
+    string arg2;
+    string result;
+};
 
 class Parser {
     public:
@@ -47,8 +53,10 @@ class Parser {
 
     private:
     stack<Token> tokenStack; // stack to hold our tokens
+    stack<Quad> quadStack; // stack to hold our quads
     vector<Token> tokens; // tokens to be parsed
     Token mostRecentOpInStack; // most recent operator in the stack
+    int tempVariableUsedCounter = 1; // counter for our temporary variables
 
     bool isOperator(const Token &incomingToken); // checks if the token is an operator
     void handleOperator(const Token &incomingToken); // handles the operator
