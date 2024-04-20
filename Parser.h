@@ -29,12 +29,13 @@ enum ParserClass { // our different parser states
     PARSE_CALL,
     PARSE_PROC,
     PARSE_ELSE,
+    PARSE_COMMA,
     PARSE_GET,
     PARSE_PUT,
     NON_OP
 };
 
-const int PARSER_STATES = 25;
+const int PARSER_STATES = 26;
 
 extern char ParserTransitionTable[PARSER_STATES][PARSER_STATES];
 
@@ -58,12 +59,10 @@ class Parser {
     Token mostRecentOpInStack; // most recent operator in the stack
     int tempVariableUsedCounter = 1; // counter for our temporary variables
 
-    bool isOperator(const Token &incomingToken); // checks if the token is an operator
     void handleOperator(const Token &incomingToken); // handles the operator
     void reduce(); // reduces the tokens on the stack
-
     ParserClass identifyTokenToParserClass(const Token &token); // converts the token to a parser class
-
+    Token findNextLowerOperator(); // finds the next lower operator after a reduction
 };
 
 

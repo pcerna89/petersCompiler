@@ -1,3 +1,5 @@
 CLASS program1{
-    Joe = A + 36 / Sam ;
+    VAR Joe, A;
+    CONST Sam = 2;
+    Joe = A + 36 / Sam;
 }

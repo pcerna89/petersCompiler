@@ -1,4 +1,3 @@
-
 // Parser.cpp created by Peter Cerna
 #include "Parser.h"
 
@@ -16,6 +15,7 @@ void initializeParserTransitionTable(){
     ParserTransitionTable[PARSE_ASSIGN][PARSE_LEFTPAREN] = '<';
     ParserTransitionTable[PARSE_ASSIGN][PARSE_MUL] = '<';
     ParserTransitionTable[PARSE_ASSIGN][PARSE_DIV] = '<';
+    ParserTransitionTable[PARSE_ASSIGN][PARSE_COMMA] = '>';
 
     ParserTransitionTable[PARSE_PLUS][PARSE_SEMI] = '>';
     ParserTransitionTable[PARSE_PLUS][PARSE_PLUS] = '>';
@@ -158,18 +158,19 @@ void initializeParserTransitionTable(){
     ParserTransitionTable[PARSE_LESSEQUAL][PARSE_MUL] = '<';
     ParserTransitionTable[PARSE_LESSEQUAL][PARSE_DIV] = '<';
     ParserTransitionTable[PARSE_LESSEQUAL][PARSE_THEN] = '>';
+
 }
 
 Parser::Parser(const vector<Token> &tokens) : tokens(tokens){
 }
 
 void printStack(const stack<Token> &tokenStack){
-    stack<Token> tempStack = tokenStack; // copy the stack to preserve the original
+    stack<Token> printStack = tokenStack; // copy the stack to preserve the original
     vector<Token> tempVector; 
 
-    while (!tempStack.empty()){
-        tempVector.push_back(tempStack.top());
-        tempStack.pop();
+    while (!printStack.empty()){
+        tempVector.push_back(printStack.top());
+        printStack.pop();
     }
 
     cout << "Stack Contents:" << endl;
@@ -196,22 +197,40 @@ void Parser::parse(){ // main parse loop
             if (currentToken.lexeme == "{"){
                 startProcessing = true;
                 cout << "Encountered opening brace." << endl;
+                tokenStack.push(currentToken);
+                mostRecentOpInStack = currentToken;
+                cout << "Pushed opening brace onto the stack." << endl;
+                cout << "Most recent operator in the stack: " << mostRecentOpInStack.lexeme << endl;
+
             }
-            continue;   
+            continue;
         }
+        ParserClass tokenClassification = identifyTokenToParserClass(currentToken); // identify the token class (operator or non-operator
+        
+        
+
+
+        if  (tokenClassification == NON_OP) // we need to push non ops onto the stack, however,
+        // if we find a const or var we need to ignore all the non ops up until the next delimiter
         // check if we can reduce
         handleOperator(currentToken);
+
+
 
         printStack(tokenStack);
     }
 }
 
 void Parser::handleOperator (const Token &incomingToken){
-    if (isOperator(incomingToken)){
-        char transition = '?';
-        transition = ParserTransitionTable[identifyTokenToParserClass(mostRecentOpInStack)][identifyTokenToParserClass(incomingToken)];
-        cout << "Incoming token: '" << incomingToken.lexeme << "' . Most recent operator in the stack: " << mostRecentOpInStack.lexeme << "\n" << endl;
+    // map before hand
+    ParserClass tokenClassification = identifyTokenToParserClass(incomingToken);
+    ParserClass mostRecentOpClassification = identifyTokenToParserClass(mostRecentOpInStack);
 
+    if (tokenClassification != NON_OP){ // if the token is an operator
+        char transition = '?';
+        transition = ParserTransitionTable[mostRecentOpClassification][tokenClassification];
+        cout << "Incoming token: '" << incomingToken.lexeme << "' . Most recent operator in the stack: " << mostRecentOpInStack.lexeme << "\n" << endl;
+        cout << "Transition: " << transition << endl;
         if (transition == '>'){
             cout << "Transition found as: " << transition << ". Reducing." << endl;
             reduce();
@@ -227,10 +246,6 @@ void Parser::handleOperator (const Token &incomingToken){
             mostRecentOpInStack = incomingToken;
         }
     }
-    else {
-        cout << "Token "<< incomingToken.lexeme << " is not an operator. Shifting into the stack." << endl;
-        tokenStack.push(incomingToken);
-    }
 }
 
 void Parser::reduce(){
@@ -243,9 +258,12 @@ void Parser::reduce(){
         }
         Token rightOperand = tempStack.top();
         tempStack.pop();
+        cout << "rightOperand: " << rightOperand.lexeme << endl;
         Token operatorToken = tempStack.top();
+        cout << "operatorToken: " << operatorToken.lexeme << endl;
         tempStack.pop();
         Token leftOperand = tempStack.top();
+        cout << "leftOperand: " << leftOperand.lexeme << endl;
         tempStack.pop();
 
         if (tempVariableUsedCounter <= 10){
@@ -262,7 +280,16 @@ void Parser::reduce(){
             quadStack.push(quad); // push the quad onto the onto the stack
 
             tokenStack.push(resultToken);
-            cout << "Quad generated : " << quad.op << " " << quad.arg1 << " " << quad.arg2 << " " << quad.result << "\n" << endl;
+            cout << "Quad generated: " << quad.op << " " << quad.arg1 << " " << quad.arg2 << " " << quad.result << "\n" << endl;
+
+            cout << "Before finding next lower operator: " << endl;
+            printStack(tokenStack);
+
+            Token nextLowerOp = findNextLowerOperator();
+            cout << "Next lower operator: " << nextLowerOp.lexeme << "\n" << endl;
+
+            cout << "After find next lower operator: " << endl;
+            printStack(tokenStack);
         }
         else {
             cout << "Error: Out of temporary variables." << endl;
@@ -273,37 +300,26 @@ void Parser::reduce(){
     }
 }
 
-bool Parser::isOperator(const Token &token){
-    ParserClass tokenClassification = identifyTokenToParserClass(token);
-    switch (tokenClassification){
-        case PARSE_SEMI:
-        case PARSE_ASSIGN:
-        case PARSE_PLUS:
-        case PARSE_MINUS:
-        case PARSE_LEFTPAREN:
-        case PARSE_RIGHTPAREN:
-        case PARSE_MUL:
-        case PARSE_DIV:
-        case PARSE_IF:
-        case PARSE_THEN:
-        case PARSE_ODD:
-        case PARSE_EQUALS:
-        case PARSE_NOTEQUAL:
-        case PARSE_GREATER:
-        case PARSE_LESS:
-        case PARSE_GREATEREQUAL:
-        case PARSE_LESSEQUAL:
-        case PARSE_LEFTBRACE:
-        case PARSE_RIGHTBRACE:
-        case PARSE_CALL:
-        case PARSE_PROC:
-        case PARSE_ELSE:
-        case PARSE_GET:
-        case PARSE_PUT:
-            return true;
-        default:
-            return false;
+Token Parser::findNextLowerOperator(){
+    stack<Token> tempStack;
+    Token lowerOperator = {"", ""};
+
+    // moving elements from the stack to a temporary stack until we find an operator
+    while (!tokenStack.empty() && identifyTokenToParserClass(tokenStack.top()) == NON_OP){
+        tempStack.push(tokenStack.top());
+        tokenStack.pop();
     }
+    // if we find an operator, we store it in lowerOperator
+    if (!tokenStack.empty() && identifyTokenToParserClass(tokenStack.top()) != NON_OP){
+        lowerOperator = tokenStack.top();
+    }
+    // moving elements back to the original stack
+    while (!tempStack.empty()){
+        tokenStack.push(tempStack.top());
+        tempStack.pop();
+    }
+
+    return lowerOperator;
 }
 
 ParserClass Parser::identifyTokenToParserClass(const Token &token){
@@ -331,6 +347,7 @@ ParserClass Parser::identifyTokenToParserClass(const Token &token){
     if (token.lexeme == "ELSE") return PARSE_ELSE;
     if (token.lexeme == "GET") return PARSE_GET;
     if (token.lexeme == "PUT") return PARSE_PUT;
+    if (token.lexeme == ",") return PARSE_COMMA;
     else return NON_OP;
 
 

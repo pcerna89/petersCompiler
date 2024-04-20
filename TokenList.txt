@@ -4,6 +4,16 @@ Lexemes:                      Types:
 CLASS                         $CLASS
 program1                      Identifier
 {                             $LB
+VAR                           $VAR
+Joe                           Identifier
+,                             $Comma
+A                             Identifier
+;                             $Semi
+CONST                         $CONST
+Sam                           Identifier
+=                             $Assign
+2                             Numeric Literal
+;                             $Semi
 Joe                           Identifier
 =                             $Assign
 A                             Identifier

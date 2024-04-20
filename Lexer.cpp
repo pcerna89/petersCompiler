@@ -25,6 +25,8 @@ vector<string> ReservedWord{ // our reserved words
     "THEN",
     "DO",
     "ODD"
+    "READ",
+    "WRITE"
 };
 
 // function to convert lexer state to string to print for our tokens

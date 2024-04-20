@@ -38,3 +38,16 @@ bool Parser::canReduce(){
     }
     return canReduce;
 }
+
+
+
+
+    //go before the function call
+    else if (incomingToken.lexeme == "VAR" || incomingToken.lexeme == "CONST"){
+        cout << "Encountered either VAR or CONST. Ignoring" << endl;
+        return;
+    }
+    else {
+        cout << "Token '"<< incomingToken.lexeme << "' is not an operator. Shifting into the stack." << endl;
+        tokenStack.push(incomingToken);
+    }
