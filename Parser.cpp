@@ -181,10 +181,13 @@ void printStack(const stack<Token> &tokenStack){
     cout << endl;
 }
 
-bool startProcessing = false; // flag to indicate when to start processing tokens
+
 
 void Parser::parse(){ // main parse loop
     initializeParserTransitionTable();
+
+    bool skipTokenUntilOpeningBrace = true;
+    bool skipTokenUntilDelimiter = false; // flag to determine if tokens should be skipped
 
     Token initialOpInStack{"$Semi", ";"};
     tokenStack.push(initialOpInStack);
@@ -193,33 +196,54 @@ void Parser::parse(){ // main parse loop
     printStack(tokenStack);
 
     for (const auto &currentToken : tokens){
-        if (!startProcessing){
+        cout << "Incoming token: '" <<  currentToken.lexeme << "'" << endl;
+
+        if (skipTokenUntilOpeningBrace){
             if (currentToken.lexeme == "{"){
-                startProcessing = true;
+                //tokenStack.push(currentToken);
+                //mostRecentOpInStack = currentToken;
                 cout << "Encountered opening brace." << endl;
-                tokenStack.push(currentToken);
-                mostRecentOpInStack = currentToken;
-                cout << "Pushed opening brace onto the stack." << endl;
-                cout << "Most recent operator in the stack: " << mostRecentOpInStack.lexeme << endl;
+                //cout << "Pushed opening brace onto the stack." << endl;
+                skipTokenUntilOpeningBrace = false;
 
             }
+            else {
+                continue;
+            }
+        }
+
+        if (skipTokenUntilDelimiter){
+            if (currentToken.lexeme != ";"){
+                continue;
+            }
+            else {
+                skipTokenUntilDelimiter = false; // reset on semi
+                cout << "Encountered ';'. Resuming token processing. " << endl;
+            }
+        }
+
+        if (currentToken.lexeme == "VAR" || currentToken.lexeme == "CONST" || currentToken.lexeme == "PROCEDURE"){
+            skipTokenUntilDelimiter = true;
+            cout << "Encountered keyword: " << currentToken.lexeme << ". Skipping tokens until ';'" << endl;
             continue;
         }
-        ParserClass tokenClassification = identifyTokenToParserClass(currentToken); // identify the token class (operator or non-operator
-        
-        
 
-
-        if  (tokenClassification == NON_OP) // we need to push non ops onto the stack, however,
-        // if we find a const or var we need to ignore all the non ops up until the next delimiter
-        // check if we can reduce
-        handleOperator(currentToken);
-
-
-
+        if (!skipTokenUntilDelimiter && identifyTokenToParserClass(currentToken) == NON_OP){
+            if (currentToken.lexeme != ";" && currentToken.lexeme != ","){
+                tokenStack.push(currentToken);
+                cout << "Pushed non-operator onto the stack: '" << currentToken.lexeme << "'" << endl;
+            }
+            else {
+                cout << "Enountered a ';' or ','. Skipping token." << endl;
+            }
+        }
+        else {
+            handleOperator(currentToken);
+        }
         printStack(tokenStack);
     }
 }
+
 
 void Parser::handleOperator (const Token &incomingToken){
     // map before hand
@@ -229,21 +253,34 @@ void Parser::handleOperator (const Token &incomingToken){
     if (tokenClassification != NON_OP){ // if the token is an operator
         char transition = '?';
         transition = ParserTransitionTable[mostRecentOpClassification][tokenClassification];
-        cout << "Incoming token: '" << incomingToken.lexeme << "' . Most recent operator in the stack: " << mostRecentOpInStack.lexeme << "\n" << endl;
-        cout << "Transition: " << transition << endl;
+        cout << "Most recent operator in the stack: " << mostRecentOpInStack.lexeme << endl;
         if (transition == '>'){
             cout << "Transition found as: " << transition << ". Reducing." << endl;
-            reduce();
+            // reduce();
         }
         else if (transition == '<'){
             cout << "Transition found as: " << transition << ". Shifting into the stack." << endl;
             tokenStack.push(incomingToken);
+            cout << "Pushing '" << incomingToken.lexeme << "' onto the stack." << endl;
             mostRecentOpInStack = incomingToken;
         }
         else if (transition == '='){
             cout << "Transition found as: " << transition << ". Removing the last operator from the stack." << endl;
             tokenStack.push(incomingToken);
+            cout << "Pushing '" << incomingToken.lexeme << "' onto the stack." << endl;
             mostRecentOpInStack = incomingToken;
+        }
+        else {
+            cout << "Transition found as none." << endl;
+            if (tokenClassification == PARSE_SEMI || tokenClassification == PARSE_COMMA){
+                mostRecentOpInStack = incomingToken;
+                cout << "Operator not being pushed onto the stack." << endl;
+            }
+            else {
+                tokenStack.push(incomingToken);
+                cout << "Pushing '" << incomingToken.lexeme << "' onto the stack." << endl;
+                mostRecentOpInStack = incomingToken;
+            }
         }
     }
 }
