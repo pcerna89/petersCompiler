@@ -1,0 +1,3 @@
+CLASS pgm4{
+    IF A > B THEN A = A + B;
+}

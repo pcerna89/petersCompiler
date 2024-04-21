@@ -212,7 +212,7 @@ void Parser::parse(){ // main parse loop
     printStack(tokenStack);
 
     for (const auto &currentToken : tokens){
-        cout << "Incoming token: '" <<  currentToken.lexeme << "'" << endl;
+        cout << "Incoming token: '" <<  currentToken.lexeme << "'." << endl;
 
         if (skipTokenUntilOpeningBrace){
             if (currentToken.lexeme == "{"){
@@ -268,10 +268,10 @@ void Parser::handleOperator (const Token &incomingToken){
     if (tokenClassification != NON_OP){ // if the token is an operator
         char transition = '?';
         transition = ParserTransitionTable[mostRecentOpClassification][tokenClassification];
-        cout << "Most recent operator used: " << mostRecentOperatorUsed.lexeme << endl;
-        cout << "Comparing against incoming token: " << incomingToken.lexeme << endl;
+        cout << "Most recent operator used: '" << mostRecentOperatorUsed.lexeme << "'." << endl;
+        cout << "Comparing against incoming token: '" << incomingToken.lexeme << "'." << endl;
         if (transition == '>'){
-            cout << "Transition found as: " << transition << ". Reducing." << endl;
+            cout << "Transition found as: '" << transition << "'. Reducing." << endl;
             reduce(incomingToken);
         }
         else if (transition == '<'){
@@ -282,10 +282,11 @@ void Parser::handleOperator (const Token &incomingToken){
             //printStack(tokenStack);
         }
         else if (transition == '='){
-            cout << "Transition found as: " << transition << ". Removing the last operator from the stack." << endl;
+            cout << "Transition found as: '" << transition << "'." << endl;
             tokenStack.push(incomingToken);
             cout << "Pushing '" << incomingToken.lexeme << "' onto the stack." << endl;
             mostRecentOperatorUsed = incomingToken;
+            printStack(tokenStack);
         }
         else {
             cout << "No transition found." << endl;
@@ -379,7 +380,7 @@ void Parser::generateArithmeticQuad(const Token &operatorToken, const Token &lef
     Quad arithQuad = {operatorToken.lexeme, leftOperand.lexeme, rightOperand.lexeme, resultTempVariable};
 
     quadStack.push(arithQuad);
-    cout << "Generated Quad: '" << arithQuad.op << 
+    cout << "Generated Arithmetic Quad: '" << arithQuad.op << 
             "' '" << arithQuad.arg1 << 
             "' '" << arithQuad.arg2 << 
             "' '" << arithQuad.result << 
@@ -396,7 +397,7 @@ void Parser::generateAssignmentQuad(const Token &leftOperand, const Token &right
     Quad assQuad = {"=", leftOperand.lexeme, resultTempVariable, "?"};
 
     quadStack.push(assQuad);
-    cout << "Generated Quad: '" << assQuad.op << 
+    cout << "Generated Assignment Quad: '" << assQuad.op << 
             "' '" << assQuad.arg1 << 
             "' '" << assQuad.arg2 << 
             "' '" << assQuad.result <<
@@ -405,9 +406,14 @@ void Parser::generateAssignmentQuad(const Token &leftOperand, const Token &right
 }
 
 void Parser::generateRelationalQuad(const Token &operatorToken, const Token &leftOperand, const Token &rightOperand){
-    Quad quad = {operatorToken.lexeme, leftOperand.lexeme, rightOperand.lexeme, ""};
+    Quad quad = {operatorToken.lexeme, leftOperand.lexeme, rightOperand.lexeme, "?"};
     quadStack.push(quad);
-    cout << "Generated Quad: '" << quad.op << "' '" << quad.arg1 << "' '" << quad.arg2 << "' '" << quad.result << "'" << endl;
+    cout << "Generated Relational Quad: '" << quad.op << 
+            "' '" << quad.arg1 << 
+            "' '" << quad.arg2 << 
+            "' '" << quad.result << 
+            "'" << endl;
+    releaseTemp(quad.result);
 }
 
 string Parser::getTemp(){
@@ -438,9 +444,37 @@ void Parser::handleSpecialCases(){
         tokenStack.pop();
         Token secondToken = tokenStack.top();
 
+        // if we encounter the special case of {}
         if (topToken.lexeme == "}" && secondToken.lexeme == "{"){
-            tokenStack.pop(); // pop off both tokens for the special case {}
+            tokenStack.pop(); 
             cout << "Popped '}' and '{' from the stack." << endl;
+        }
+        // if we encounter the special case of ()
+        else if (topToken.lexeme == ")"){
+            cout << "Popped ')' from the stack." << endl;
+            // if next token on the stack is a left paren then we pop it off the stack as well
+            if (!tokenStack.empty() && tokenStack.top().lexeme == "("){
+                tokenStack.pop();
+                cout << "Popped '(' from the stack." << endl;
+            }
+            else {
+                // we use a temp stack as to store the expression until we find the left paren
+                stack<Token> tempStack;
+                while (!tokenStack.empty() && tokenStack.top().lexeme != "("){
+                    tempStack.push(tokenStack.top());
+                    tokenStack.pop();
+                }
+                // if we find the left paren, we pop it off the stack
+                if (!tokenStack.empty() && tokenStack.top().lexeme == "("){
+                    tokenStack.pop();
+                    cout << "Popped '(' from the stack." << endl;
+                }
+                // we push the expression back into the stack
+                while (!tempStack.empty()){
+                    tokenStack.push(tempStack.top());
+                    tempStack.pop();
+                }
+            }
         }
         else {
             tokenStack.push(topToken); // push back the token if it's not the special case

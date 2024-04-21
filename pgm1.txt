@@ -1,4 +1,4 @@
-CLASS program1{
+CLASS pgm1{
     VAR Joe, A;
     CONST Sam = 2;
     Joe = A + 36 / Sam;
