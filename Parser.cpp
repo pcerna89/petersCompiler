@@ -277,8 +277,9 @@ void Parser::handleOperator (const Token &incomingToken){
         else if (transition == '<'){
             cout << "Transition found as: " << transition << ". Shifting into the stack." << endl;
             tokenStack.push(incomingToken);
-            cout << "Pushing '" << incomingToken.lexeme << "' onto the stack." << endl;
+            cout << "Test: Pushing '" << incomingToken.lexeme << "' onto the stack." << endl;
             mostRecentOperatorUsed = incomingToken;
+            //printStack(tokenStack);
         }
         else if (transition == '='){
             cout << "Transition found as: " << transition << ". Removing the last operator from the stack." << endl;
@@ -328,17 +329,14 @@ void Parser::reduce(const Token& triggerToken){
     bool needsFurtherReduction = !triggerToken.lexeme.empty();
 
     cout << "Token stack size: " << tokenStack.size() << "\n" << endl;
+    // while the stack is greater than 3, we reduce
     while (tokenStack.size() > 3){
 
-        Token rightOperand = tokenStack.top();
-        tokenStack.pop();
+        Token rightOperand = tokenStack.top(); tokenStack.pop();
+        Token operatorToken = tokenStack.top(); tokenStack.pop();
+        Token leftOperand = tokenStack.top(); tokenStack.pop();
 
-        Token operatorToken = tokenStack.top();
-        tokenStack.pop();
-
-        Token leftOperand = tokenStack.top();
-        tokenStack.pop();
-
+        // if the operator is an arithmetic operator
         if (operatorToken.lexeme == "+" || 
             operatorToken.lexeme == "-" || 
             operatorToken.lexeme == "*" ||
@@ -346,12 +344,12 @@ void Parser::reduce(const Token& triggerToken){
             generateArithmeticQuad(operatorToken, leftOperand, rightOperand);
             printStack(tokenStack);
         }
-
+        // if the operator is an assignment operator
         else if (operatorToken.lexeme == "="){
             generateAssignmentQuad(leftOperand, rightOperand);
             printStack(tokenStack);
         }
-
+        // if the operator is a relational operator
         else if (operatorToken.lexeme == "==" ||
                  operatorToken.lexeme == "!=" ||
                  operatorToken.lexeme == ">" ||
@@ -361,28 +359,18 @@ void Parser::reduce(const Token& triggerToken){
             generateRelationalQuad(operatorToken, leftOperand, rightOperand);
             printStack(tokenStack);
         }
-
-        else {
-            cout << "Error: Operator not recognized." << endl;
-            break;
-        }
-
+        // find the next lower operator after a reduction is made
         Token lastLowerOp = findLastLowerOperator();
-
         if (!lastLowerOp.lexeme.empty()){
             mostRecentOperatorUsed = lastLowerOp;
         }
-/*
-        else {
-            mostRecentOperatorUsed = {"$Semi", ";"};
-        }
-*/
+        // if we need to further reduce
         if (needsFurtherReduction){
             handleOperator(triggerToken); // recursively call handleOperator
             needsFurtherReduction = false; // reset the flag
+            break;
         }
 
-        if (tokenStack.size() < 3) break; // break if we have less than 3 elements in the stack
     }
 }
 
