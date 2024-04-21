@@ -164,9 +164,9 @@ void initializeParserTransitionTable(){
 Parser::Parser(const vector<Token> &tokens) : tokens(tokens){
 }
 
-void printStack(const stack<Token> &tokenStack){
+void printStack(const stack<Token> &tokenStack){ /// change later so it's in the header file
     stack<Token> printStack = tokenStack; // copy the stack to preserve the original
-    vector<Token> tempVector; 
+    vector<Token> tempVector; //
 
     while (!printStack.empty()){
         tempVector.push_back(printStack.top());
@@ -174,13 +174,29 @@ void printStack(const stack<Token> &tokenStack){
     }
 
     cout << "Stack Contents:" << endl;
-    for (auto it = tempVector.rbegin(); it != tempVector.rend(); ++it){
-        cout << it->lexeme << endl;
+    for (auto it = tempVector.rbegin(); it != tempVector.rend(); ++it){ // reverse iterator
+        cout << it->lexeme << endl; 
     }
     cout << "----------------------" << endl;
     cout << endl;
 }
 
+void Parser::printQuadStack(){
+    cout << "Quad Stack Contents:" << endl;
+    stack<Quad> tempStack = quadStack; // copy the stack to preserve the original
+    vector<Quad> tempVector; 
+
+    while (!tempStack.empty()){ // transfer from the stack to the vector in reverse order
+        tempVector.push_back(tempStack.top());
+        tempStack.pop();
+    }
+
+    for (auto it = tempVector.rbegin(); it != tempVector.rend(); ++it){ // reverse iterator
+        cout << it->op << " " << it->arg1 << " " << it->arg2 << " " << it->result << endl;
+    }
+    cout << "----------------------" << endl;
+    cout << endl;
+}
 
 
 void Parser::parse(){ // main parse loop
@@ -191,7 +207,7 @@ void Parser::parse(){ // main parse loop
 
     Token initialOpInStack{"$Semi", ";"};
     tokenStack.push(initialOpInStack);
-    mostRecentOpInStack = initialOpInStack;
+    mostRecentOperatorUsed = initialOpInStack;
     cout << "\nPushed initial Schwartz onto the stack.\n" << endl;
     printStack(tokenStack);
 
@@ -200,10 +216,7 @@ void Parser::parse(){ // main parse loop
 
         if (skipTokenUntilOpeningBrace){
             if (currentToken.lexeme == "{"){
-                //tokenStack.push(currentToken);
-                //mostRecentOpInStack = currentToken;
                 cout << "Encountered opening brace." << endl;
-                //cout << "Pushed opening brace onto the stack." << endl;
                 skipTokenUntilOpeningBrace = false;
 
             }
@@ -239,105 +252,56 @@ void Parser::parse(){ // main parse loop
         }
         else {
             handleOperator(currentToken);
+            handleSpecialCases();
         }
         printStack(tokenStack);
     }
+    printQuadStack();
 }
 
 
 void Parser::handleOperator (const Token &incomingToken){
     // map before hand
     ParserClass tokenClassification = identifyTokenToParserClass(incomingToken);
-    ParserClass mostRecentOpClassification = identifyTokenToParserClass(mostRecentOpInStack);
+    ParserClass mostRecentOpClassification = identifyTokenToParserClass(mostRecentOperatorUsed);
 
     if (tokenClassification != NON_OP){ // if the token is an operator
         char transition = '?';
         transition = ParserTransitionTable[mostRecentOpClassification][tokenClassification];
-        cout << "Most recent operator in the stack: " << mostRecentOpInStack.lexeme << endl;
+        cout << "Most recent operator used: " << mostRecentOperatorUsed.lexeme << endl;
+        cout << "Comparing against incoming token: " << incomingToken.lexeme << endl;
         if (transition == '>'){
             cout << "Transition found as: " << transition << ". Reducing." << endl;
-            // reduce();
+            reduce(incomingToken);
         }
         else if (transition == '<'){
             cout << "Transition found as: " << transition << ". Shifting into the stack." << endl;
             tokenStack.push(incomingToken);
             cout << "Pushing '" << incomingToken.lexeme << "' onto the stack." << endl;
-            mostRecentOpInStack = incomingToken;
+            mostRecentOperatorUsed = incomingToken;
         }
         else if (transition == '='){
             cout << "Transition found as: " << transition << ". Removing the last operator from the stack." << endl;
             tokenStack.push(incomingToken);
             cout << "Pushing '" << incomingToken.lexeme << "' onto the stack." << endl;
-            mostRecentOpInStack = incomingToken;
+            mostRecentOperatorUsed = incomingToken;
         }
         else {
-            cout << "Transition found as none." << endl;
+            cout << "No transition found." << endl;
             if (tokenClassification == PARSE_SEMI || tokenClassification == PARSE_COMMA){
-                mostRecentOpInStack = incomingToken;
+                //mostRecentOperatorUsed = incomingToken;
                 cout << "Operator not being pushed onto the stack." << endl;
             }
             else {
                 tokenStack.push(incomingToken);
                 cout << "Pushing '" << incomingToken.lexeme << "' onto the stack." << endl;
-                mostRecentOpInStack = incomingToken;
+                mostRecentOperatorUsed = incomingToken;
             }
         }
     }
 }
 
-void Parser::reduce(){
-    cout << "Token stack size: " << tokenStack.size() << "\n" << endl;
-    if (tokenStack.size() >= 3){
-        stack<Token> tempStack;
-        for (int i = 0; i < 3; i++){
-            tempStack.push(tokenStack.top());
-            tokenStack.pop();
-        }
-        Token rightOperand = tempStack.top();
-        tempStack.pop();
-        cout << "rightOperand: " << rightOperand.lexeme << endl;
-        Token operatorToken = tempStack.top();
-        cout << "operatorToken: " << operatorToken.lexeme << endl;
-        tempStack.pop();
-        Token leftOperand = tempStack.top();
-        cout << "leftOperand: " << leftOperand.lexeme << endl;
-        tempStack.pop();
-
-        if (tempVariableUsedCounter <= 10){
-            Token resultToken;
-            resultToken.type = "TempVariable";
-            resultToken.lexeme = "Temp" + to_string(tempVariableUsedCounter++);
-
-            Quad quad;
-            quad.op = operatorToken.lexeme;
-            quad.arg1 = leftOperand.lexeme;
-            quad.arg2 = rightOperand.lexeme;
-            quad.result = resultToken.lexeme;
-
-            quadStack.push(quad); // push the quad onto the onto the stack
-
-            tokenStack.push(resultToken);
-            cout << "Quad generated: " << quad.op << " " << quad.arg1 << " " << quad.arg2 << " " << quad.result << "\n" << endl;
-
-            cout << "Before finding next lower operator: " << endl;
-            printStack(tokenStack);
-
-            Token nextLowerOp = findNextLowerOperator();
-            cout << "Next lower operator: " << nextLowerOp.lexeme << "\n" << endl;
-
-            cout << "After find next lower operator: " << endl;
-            printStack(tokenStack);
-        }
-        else {
-            cout << "Error: Out of temporary variables." << endl;
-        }
-    }
-    else {
-        cout << "Error: Not enough tokens to reduce." << endl;
-    }
-}
-
-Token Parser::findNextLowerOperator(){
+Token Parser::findLastLowerOperator(){
     stack<Token> tempStack;
     Token lowerOperator = {"", ""};
 
@@ -357,6 +321,130 @@ Token Parser::findNextLowerOperator(){
     }
 
     return lowerOperator;
+}
+
+void Parser::reduce(const Token& triggerToken){
+
+    bool needsFurtherReduction = !triggerToken.lexeme.empty();
+
+    cout << "Token stack size: " << tokenStack.size() << "\n" << endl;
+    while (tokenStack.size() > 3){
+
+        Token rightOperand = tokenStack.top();
+        tokenStack.pop();
+
+        Token operatorToken = tokenStack.top();
+        tokenStack.pop();
+
+        Token leftOperand = tokenStack.top();
+        tokenStack.pop();
+
+        if (operatorToken.lexeme == "+" || 
+            operatorToken.lexeme == "-" || 
+            operatorToken.lexeme == "*" ||
+            operatorToken.lexeme == "/"){
+            generateArithmeticQuad(operatorToken, leftOperand, rightOperand);
+            printStack(tokenStack);
+        }
+
+        else if (operatorToken.lexeme == "="){
+            generateAssignmentQuad(leftOperand, rightOperand);
+            printStack(tokenStack);
+        }
+
+        else if (operatorToken.lexeme == "==" ||
+                 operatorToken.lexeme == "!=" ||
+                 operatorToken.lexeme == ">" ||
+                 operatorToken.lexeme == "<" ||
+                 operatorToken.lexeme == ">=" ||
+                 operatorToken.lexeme == "<="){
+            generateRelationalQuad(operatorToken, leftOperand, rightOperand);
+            printStack(tokenStack);
+        }
+
+        else {
+            cout << "Error: Operator not recognized." << endl;
+            break;
+        }
+
+        Token lastLowerOp = findLastLowerOperator();
+
+        if (!lastLowerOp.lexeme.empty()){
+            mostRecentOperatorUsed = lastLowerOp;
+        }
+/*
+        else {
+            mostRecentOperatorUsed = {"$Semi", ";"};
+        }
+*/
+        if (needsFurtherReduction){
+            handleOperator(triggerToken); // recursively call handleOperator
+            needsFurtherReduction = false; // reset the flag
+        }
+
+        if (tokenStack.size() < 3) break; // break if we have less than 3 elements in the stack
+    }
+}
+
+void Parser::generateArithmeticQuad(const Token &operatorToken, const Token &leftOperand, const Token &rightOperand){
+    if (tempVariableUsedCounter <= 10){
+        string resultTempVariable = "Temp" + to_string(tempVariableUsedCounter++);
+        Quad arithQuad = {operatorToken.lexeme, leftOperand.lexeme, rightOperand.lexeme, resultTempVariable};
+
+        quadStack.push(arithQuad);
+        cout << "Generated Quad: '" << arithQuad.op << 
+                "' '" << arithQuad.arg1 << 
+                "' '" << arithQuad.arg2 << 
+                "' '" << arithQuad.result << 
+                "'" << endl;
+
+        Token resultToken = {"TempVariable", resultTempVariable};
+        tokenStack.push(resultToken);
+        cout << "Pushed result onto the stack: '" << resultToken.lexeme << "'\n" << endl;
+    }
+    else {
+        cout << "Error: Out of temporary variables." << endl;
+    }
+}
+
+void Parser::generateAssignmentQuad(const Token &leftOperand, const Token &rightOperand){
+    if (tempVariableUsedCounter <= 10){
+        string resultTempVariable = "Temp" + to_string(tempVariableUsedCounter++);
+        Quad assQuad = {"=", leftOperand.lexeme, resultTempVariable, "?"};
+
+        quadStack.push(assQuad);
+        cout << "Generated Quad: '" << assQuad.op << 
+                "' '" << assQuad.arg1 << 
+                "' '" << assQuad.arg2 << 
+                "' '" << assQuad.result <<
+                "'" <<  endl;
+    }
+    else {
+        cout << "Error: Out of temporary variables." << endl;
+    }
+}
+
+void Parser::generateRelationalQuad(const Token &operatorToken, const Token &leftOperand, const Token &rightOperand){
+    Quad quad = {operatorToken.lexeme, leftOperand.lexeme, rightOperand.lexeme, ""};
+    quadStack.push(quad);
+    cout << "Generated Quad: '" << quad.op << "' '" << quad.arg1 << "' '" << quad.arg2 << "' '" << quad.result << "'" << endl;
+}
+
+void Parser::handleSpecialCases(){
+    if (tokenStack.size() >= 2){
+        Token topToken = tokenStack.top();
+        tokenStack.pop();
+        Token secondToken = tokenStack.top();
+
+        if (topToken.lexeme == "}" && secondToken.lexeme == "{"){
+            tokenStack.pop(); // pop off both tokens for the special case {}
+            cout << "Popped '}' and '{' from the stack." << endl;
+        }
+        else {
+            tokenStack.push(topToken); // push back the token if it's not the special case
+        
+        }
+    }
 }
 
 ParserClass Parser::identifyTokenToParserClass(const Token &token){

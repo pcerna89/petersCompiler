@@ -36,10 +36,9 @@ enum ParserClass { // our different parser states
 };
 
 const int PARSER_STATES = 26;
-
 extern char ParserTransitionTable[PARSER_STATES][PARSER_STATES];
-
 void initializeParserTransitionTable();
+
 struct Quad { // stores the quadruple
     string op;
     string arg1;
@@ -56,13 +55,20 @@ class Parser {
     stack<Token> tokenStack; // stack to hold our tokens
     stack<Quad> quadStack; // stack to hold our quads
     vector<Token> tokens; // tokens to be parsed
-    Token mostRecentOpInStack; // most recent operator in the stack
+    Token mostRecentOperatorUsed; // most recent operator in the stack
     int tempVariableUsedCounter = 1; // counter for our temporary variables
 
+    // parser helper functions
     void handleOperator(const Token &incomingToken); // handles the operator
-    void reduce(); // reduces the tokens on the stack
+    void reduce(const Token & triggerToken); // reduces the tokens on the stack
     ParserClass identifyTokenToParserClass(const Token &token); // converts the token to a parser class
-    Token findNextLowerOperator(); // finds the next lower operator after a reduction
+    Token findLastLowerOperator(); // finds the next lower operator after a reduction is made
+    void printQuadStack(); // prints the quad stack
+    void handleSpecialCases(); // handles special cases
+
+    void generateArithmeticQuad(const Token &operatorToken, const Token &leftOperand, const Token &rightOperand); // generates the arithmetic quad
+    void generateAssignmentQuad(const Token &leftOperand, const Token &rightOperand); // generates the assignment quad
+    void generateRelationalQuad(const Token &operatorToken, const Token &leftOperand, const Token &rightOperand); // generates the relational quad
 };
 
 

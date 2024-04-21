@@ -2,25 +2,43 @@ Token List
 Lexemes:                      Types:
 -----------------------------
 CLASS                         $CLASS
-program1                      Identifier
+pgm3                          Identifier
 {                             $LB
-VAR                           $VAR
-Joe                           Identifier
-,                             $Comma
-A                             Identifier
-;                             $Semi
 CONST                         $CONST
-Sam                           Identifier
+M                             Identifier
+=                             $Assign
+7                             Numeric Literal
+,                             $Comma
+N                             Identifier
+=                             $Assign
+85                            Numeric Literal
+;                             $Semi
+VAR                           $VAR
+X                             Identifier
+,                             $Comma
+Y                             Identifier
+,                             $Comma
+Z                             Identifier
+;                             $Semi
+Y                             Identifier
+=                             $Assign
+M                             Identifier
++                             $Add
+16                            Numeric Literal
+;                             $Semi
+X                             Identifier
 =                             $Assign
 2                             Numeric Literal
-;                             $Semi
-Joe                           Identifier
-=                             $Assign
-A                             Identifier
 +                             $Add
-36                            Numeric Literal
-/                             $Div
-Sam                           Identifier
+Y                             Identifier
+;                             $Semi
+Z                             Identifier
+=                             $Assign
+X                             Identifier
++                             $Add
+M                             Identifier
++                             $Add
+2                             Numeric Literal
 ;                             $Semi
 }                             $RB
 EOF                           EOF

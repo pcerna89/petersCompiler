@@ -1,0 +1,7 @@
+CLASS pgm3{
+  CONST M = 7, N = 85;
+  VAR X, Y, Z;
+  Y = M + 16;
+  X = 2 + Y;
+  Z = X + M + 2;
+}
