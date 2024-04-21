@@ -4,6 +4,7 @@
 #define PARSER_H
 #include "Lexer.h"
 #include <stack>
+#include <set>
 using namespace std;
 
 enum ParserClass { // our different parser states
@@ -56,7 +57,9 @@ class Parser {
     stack<Quad> quadStack; // stack to hold our quads
     vector<Token> tokens; // tokens to be parsed
     Token mostRecentOperatorUsed; // most recent operator in the stack
-    int tempVariableUsedCounter = 1; // counter for our temporary variables
+    //int tempVariableUsedCounter = 1; // counter for our temporary variables
+    vector<string> tempVariables; // vector to hold our temporary variables
+    set<int> availableTemps;
 
     // parser helper functions
     void handleOperator(const Token &incomingToken); // handles the operator
@@ -65,6 +68,8 @@ class Parser {
     Token findLastLowerOperator(); // finds the next lower operator after a reduction is made
     void printQuadStack(); // prints the quad stack
     void handleSpecialCases(); // handles special cases
+    string getTemp(); // gets a temporary variable
+    void releaseTemp(const string &temp); // releases a temporary variable
 
     void generateArithmeticQuad(const Token &operatorToken, const Token &leftOperand, const Token &rightOperand); // generates the arithmetic quad
     void generateAssignmentQuad(const Token &leftOperand, const Token &rightOperand); // generates the assignment quad

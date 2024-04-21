@@ -375,47 +375,61 @@ void Parser::reduce(const Token& triggerToken){
 }
 
 void Parser::generateArithmeticQuad(const Token &operatorToken, const Token &leftOperand, const Token &rightOperand){
-    if (tempVariableUsedCounter <= 10){
-        string resultTempVariable = "Temp" + to_string(tempVariableUsedCounter++);
-        Quad arithQuad = {operatorToken.lexeme, leftOperand.lexeme, rightOperand.lexeme, resultTempVariable};
+    string resultTempVariable = getTemp();
+    Quad arithQuad = {operatorToken.lexeme, leftOperand.lexeme, rightOperand.lexeme, resultTempVariable};
 
-        quadStack.push(arithQuad);
-        cout << "Generated Quad: '" << arithQuad.op << 
-                "' '" << arithQuad.arg1 << 
-                "' '" << arithQuad.arg2 << 
-                "' '" << arithQuad.result << 
-                "'" << endl;
+    quadStack.push(arithQuad);
+    cout << "Generated Quad: '" << arithQuad.op << 
+            "' '" << arithQuad.arg1 << 
+            "' '" << arithQuad.arg2 << 
+            "' '" << arithQuad.result << 
+            "'" << endl;
 
-        Token resultToken = {"TempVariable", resultTempVariable};
-        tokenStack.push(resultToken);
-        cout << "Pushed result onto the stack: '" << resultToken.lexeme << "'\n" << endl;
-    }
-    else {
-        cout << "Error: Out of temporary variables." << endl;
-    }
+    Token resultToken = {"TempVariable", resultTempVariable};
+    tokenStack.push(resultToken);
+    cout << "Pushed result onto the stack: '" << resultToken.lexeme << "'\n" << endl;
 }
 
-void Parser::generateAssignmentQuad(const Token &leftOperand, const Token &rightOperand){
-    if (tempVariableUsedCounter <= 10){
-        string resultTempVariable = "Temp" + to_string(tempVariableUsedCounter++);
-        Quad assQuad = {"=", leftOperand.lexeme, resultTempVariable, "?"};
 
-        quadStack.push(assQuad);
-        cout << "Generated Quad: '" << assQuad.op << 
-                "' '" << assQuad.arg1 << 
-                "' '" << assQuad.arg2 << 
-                "' '" << assQuad.result <<
-                "'" <<  endl;
-    }
-    else {
-        cout << "Error: Out of temporary variables." << endl;
-    }
+void Parser::generateAssignmentQuad(const Token &leftOperand, const Token &rightOperand){
+    string resultTempVariable = getTemp();
+    Quad assQuad = {"=", leftOperand.lexeme, resultTempVariable, "?"};
+
+    quadStack.push(assQuad);
+    cout << "Generated Quad: '" << assQuad.op << 
+            "' '" << assQuad.arg1 << 
+            "' '" << assQuad.arg2 << 
+            "' '" << assQuad.result <<
+            "'" <<  endl;
+    releaseTemp(resultTempVariable);
 }
 
 void Parser::generateRelationalQuad(const Token &operatorToken, const Token &leftOperand, const Token &rightOperand){
     Quad quad = {operatorToken.lexeme, leftOperand.lexeme, rightOperand.lexeme, ""};
     quadStack.push(quad);
     cout << "Generated Quad: '" << quad.op << "' '" << quad.arg1 << "' '" << quad.arg2 << "' '" << quad.result << "'" << endl;
+}
+
+string Parser::getTemp(){
+    if (!availableTemps.empty()){
+        int index = *availableTemps.begin();
+        availableTemps.erase(index);
+        return tempVariables[index];
+    }
+    else {
+        string newTemp = "Temp" + to_string(tempVariables.size() + 1);
+        tempVariables.push_back(newTemp);
+        return newTemp;
+    }
+
+}
+
+void Parser::releaseTemp(const string &temp){
+    auto it = find(tempVariables.begin(), tempVariables.end(), temp);
+    if (it != tempVariables.end()){
+        int index = distance(tempVariables.begin(), it);
+        availableTemps.insert(index);
+    }
 }
 
 void Parser::handleSpecialCases(){
