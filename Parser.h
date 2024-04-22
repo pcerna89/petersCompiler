@@ -60,6 +60,7 @@ class Parser {
     //int tempVariableUsedCounter = 1; // counter for our temporary variables
     vector<string> tempVariables; // vector to hold our temporary variables
     set<int> availableTemps;
+    stack<string> fixUpStack; // stack to hold our fixups
 
     // parser helper functions
     void handleOperator(const Token &incomingToken); // handles the operator
@@ -67,13 +68,22 @@ class Parser {
     ParserClass identifyTokenToParserClass(const Token &token); // converts the token to a parser class
     Token findLastLowerOperator(); // finds the next lower operator after a reduction is made
     void printQuadStack(); // prints the quad stack
-    void handleSpecialCases(); // handles special cases
+    void handleSpecialCases(const Token &currentToken); // handles special cases
     string getTemp(); // gets a temporary variable
     void releaseTemp(const string &temp); // releases a temporary variable
+    void handleIfThenElse(const Token &currentToken); // handles the if then else statement
+    string invertCondition(const string &condition); // inverts the condition
+    string generateLabel(); // generates a label for our THEN
+
 
     void generateArithmeticQuad(const Token &operatorToken, const Token &leftOperand, const Token &rightOperand); // generates the arithmetic quad
     void generateAssignmentQuad(const Token &leftOperand, const Token &rightOperand); // generates the assignment quad
     void generateRelationalQuad(const Token &operatorToken, const Token &leftOperand, const Token &rightOperand); // generates the relational quad
+    void generateIfQuad(); // generates the if quad
+    void generateThenQuad();
+    void generateIfThenQuad();
+   
+
 };
 
 

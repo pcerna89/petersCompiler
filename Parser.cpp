@@ -252,7 +252,8 @@ void Parser::parse(){ // main parse loop
         }
         else {
             handleOperator(currentToken);
-            handleSpecialCases();
+            handleIfThenElse(currentToken);
+            handleSpecialCases(currentToken);
         }
         printStack(tokenStack);
     }
@@ -269,7 +270,7 @@ void Parser::handleOperator (const Token &incomingToken){
         char transition = '?';
         transition = ParserTransitionTable[mostRecentOpClassification][tokenClassification];
         cout << "Most recent operator used: '" << mostRecentOperatorUsed.lexeme << "'." << endl;
-        cout << "Comparing against incoming token: '" << incomingToken.lexeme << "'." << endl;
+        cout << "Comparing against '" << mostRecentOperatorUsed.lexeme << "' incoming token: '" << incomingToken.lexeme << "'." << endl;
         if (transition == '>'){
             cout << "Transition found as: '" << transition << "'. Reducing." << endl;
             reduce(incomingToken);
@@ -298,31 +299,79 @@ void Parser::handleOperator (const Token &incomingToken){
                 tokenStack.push(incomingToken);
                 cout << "Pushing '" << incomingToken.lexeme << "' onto the stack." << endl;
                 mostRecentOperatorUsed = incomingToken;
+                printStack(tokenStack); // debugging
             }
         }
     }
 }
 
-Token Parser::findLastLowerOperator(){
-    stack<Token> tempStack;
-    Token lowerOperator = {"", ""};
+void Parser::handleIfThenElse(const Token &currentToken){
+    if (currentToken.lexeme == "IF"){
+        generateIfQuad();
+    }
+    else if (currentToken.lexeme == "THEN"){
+        generateThenQuad();
+    }
+}
 
-    // moving elements from the stack to a temporary stack until we find an operator
-    while (!tokenStack.empty() && identifyTokenToParserClass(tokenStack.top()) == NON_OP){
-        tempStack.push(tokenStack.top());
+void Parser::handleSpecialCases(const Token &currentToken){
+    if (tokenStack.size() >= 2){
+        Token topToken = tokenStack.top();
         tokenStack.pop();
-    }
-    // if we find an operator, we store it in lowerOperator
-    if (!tokenStack.empty() && identifyTokenToParserClass(tokenStack.top()) != NON_OP){
-        lowerOperator = tokenStack.top();
-    }
-    // moving elements back to the original stack
-    while (!tempStack.empty()){
-        tokenStack.push(tempStack.top());
-        tempStack.pop();
-    }
+        Token secondToken = tokenStack.top();
 
-    return lowerOperator;
+        // if we encounter the special case of {}
+        if (topToken.lexeme == "}" && secondToken.lexeme == "{"){
+            tokenStack.pop(); 
+            cout << "Popped '}' and '{' from the stack." << endl;
+            printStack(tokenStack);
+
+        }
+        // if we encounter the special case of ()
+        else if (topToken.lexeme == ")"){
+            cout << "Popped ')' from the stack." << endl;
+            // if next token on the stack is a left paren then we pop it off the stack as well
+            if (!tokenStack.empty() && tokenStack.top().lexeme == "("){
+                tokenStack.pop();
+                cout << "Popped '(' from the stack." << endl;
+            }
+            else {
+                // we use a temp stack as to store the expression until we find the left paren
+                stack<Token> tempStack;
+                while (!tokenStack.empty() && tokenStack.top().lexeme != "("){
+                    tempStack.push(tokenStack.top());
+                    tokenStack.pop();
+                }
+                // if we find the left paren, we pop it off the stack
+                if (!tokenStack.empty() && tokenStack.top().lexeme == "("){
+                    tokenStack.pop();
+                    cout << "Popped '(' from the stack." << endl;
+                }
+                // we push the expression back into the stack
+                while (!tempStack.empty()){
+                    tokenStack.push(tempStack.top());
+                    tempStack.pop();
+                }
+            }
+        }
+        if (currentToken.lexeme == "}"){
+            if (!tokenStack.empty() && tokenStack.top().lexeme == "THEN"){
+                tokenStack.pop(); // pop off the THEN
+                cout << "Popped 'THEN' from the stack." << endl;
+                printStack(tokenStack);
+                if (!tokenStack.empty() && tokenStack.top().lexeme == "IF"){
+                    tokenStack.pop(); // pop off the IF
+                    cout << "Popped 'IF' from the stack." << endl;
+                    generateIfThenQuad();
+                    printStack(tokenStack);
+                }
+            }
+        }
+        else {
+            tokenStack.push(topToken); // push back the token if it's not the special case
+        
+        }
+    }
 }
 
 void Parser::reduce(const Token& triggerToken){
@@ -384,13 +433,12 @@ void Parser::generateArithmeticQuad(const Token &operatorToken, const Token &lef
             "' '" << arithQuad.arg1 << 
             "' '" << arithQuad.arg2 << 
             "' '" << arithQuad.result << 
-            "'" << endl;
+            "'." << endl;
 
     Token resultToken = {"TempVariable", resultTempVariable};
     tokenStack.push(resultToken);
     cout << "Pushed result onto the stack: '" << resultToken.lexeme << "'\n" << endl;
 }
-
 
 void Parser::generateAssignmentQuad(const Token &leftOperand, const Token &rightOperand){
     string resultTempVariable = getTemp();
@@ -401,19 +449,101 @@ void Parser::generateAssignmentQuad(const Token &leftOperand, const Token &right
             "' '" << assQuad.arg1 << 
             "' '" << assQuad.arg2 << 
             "' '" << assQuad.result <<
-            "'" <<  endl;
+            "'." <<  endl;
     releaseTemp(resultTempVariable);
 }
 
 void Parser::generateRelationalQuad(const Token &operatorToken, const Token &leftOperand, const Token &rightOperand){
-    Quad quad = {operatorToken.lexeme, leftOperand.lexeme, rightOperand.lexeme, "?"};
-    quadStack.push(quad);
-    cout << "Generated Relational Quad: '" << quad.op << 
-            "' '" << quad.arg1 << 
-            "' '" << quad.arg2 << 
-            "' '" << quad.result << 
-            "'" << endl;
-    releaseTemp(quad.result);
+    Quad relQuad = {operatorToken.lexeme, leftOperand.lexeme, rightOperand.lexeme, "?"};
+    quadStack.push(relQuad);
+    cout << "Generated Relational Quad: '" << relQuad.op << 
+            "' '" << relQuad.arg1 << 
+            "' '" << relQuad.arg2 << 
+            "' '" << relQuad.result << 
+            "'." << endl;
+    releaseTemp(relQuad.result);
+}
+
+void Parser::generateIfQuad(){
+    Quad ifQuad = {"IF", "?", "?", "?"};
+    quadStack.push(ifQuad);
+    cout << "Generated IF Quad: '" << ifQuad.op << 
+            "' '" << ifQuad.arg1 << 
+            "' '" << ifQuad.arg2 << 
+            "' '" << ifQuad.result << 
+            "'." << endl;
+}
+
+void Parser::generateThenQuad(){
+    string thenLabel = generateLabel(); // generate a label for our THEN
+    fixUpStack.push(thenLabel); // push the label onto the fixup stack
+    cout << "Generated and pushed label for THEN to fixup stack: '" << thenLabel << "'." << endl;
+    string condition;
+
+    if (!quadStack.empty()){
+        Quad topQuad = quadStack.top();
+        condition = topQuad.op;
+    }
+
+    string oppositeCondition = invertCondition(condition);
+
+    Quad thenQuad = {"THEN", thenLabel, oppositeCondition, "?" };
+    quadStack.push(thenQuad);
+    cout << "Generated THEN Quad: '" << thenQuad.op << 
+            "' '" << thenQuad.arg1 << 
+            "' '" << thenQuad.arg2 << 
+            "' '" << thenQuad.result << 
+            "'." << endl;
+}
+
+void Parser::generateIfThenQuad(){
+    string thenLabel = fixUpStack.top(); // get the label from the fixup stack
+    fixUpStack.pop(); // pop the label off the fixup stack
+
+    Quad ifThenQuad = {thenLabel, "?", "?", "?"};
+    quadStack.push(ifThenQuad);
+    cout << "Generated IF THEN Quad: '" << ifThenQuad.op << 
+            "' '" << ifThenQuad.arg1 << 
+            "' '" << ifThenQuad.arg2 << 
+            "' '" << ifThenQuad.result << 
+            "'." << endl;
+}
+
+Token Parser::findLastLowerOperator(){
+    stack<Token> tempStack;
+    Token lowerOperator = {"", ""};
+
+    // moving elements from the stack to a temporary stack until we find an operator
+    while (!tokenStack.empty() && identifyTokenToParserClass(tokenStack.top()) == NON_OP){
+        tempStack.push(tokenStack.top());
+        tokenStack.pop();
+    }
+    // if we find an operator, we store it in lowerOperator
+    if (!tokenStack.empty() && identifyTokenToParserClass(tokenStack.top()) != NON_OP){
+        lowerOperator = tokenStack.top();
+    }
+    // moving elements back to the original stack
+    while (!tempStack.empty()){
+        tokenStack.push(tempStack.top());
+        tempStack.pop();
+    }
+
+    return lowerOperator;
+}
+
+string Parser::generateLabel(){
+    static int labelCounter = 1; // static counter to keep track of the label
+    return "L" + to_string(labelCounter++); // return the label
+}
+
+string Parser::invertCondition(const string &condition){ // invert the condition of our boolean expression
+    if (condition == "==") return "NE";
+    if (condition == "!=") return "E";
+    if (condition == ">") return "LE";
+    if (condition == "<") return "GE";
+    if (condition == ">=") return "L";
+    if (condition == "<=") return "G";
+    return "";
 }
 
 string Parser::getTemp(){
@@ -435,51 +565,6 @@ void Parser::releaseTemp(const string &temp){
     if (it != tempVariables.end()){
         int index = distance(tempVariables.begin(), it);
         availableTemps.insert(index);
-    }
-}
-
-void Parser::handleSpecialCases(){
-    if (tokenStack.size() >= 2){
-        Token topToken = tokenStack.top();
-        tokenStack.pop();
-        Token secondToken = tokenStack.top();
-
-        // if we encounter the special case of {}
-        if (topToken.lexeme == "}" && secondToken.lexeme == "{"){
-            tokenStack.pop(); 
-            cout << "Popped '}' and '{' from the stack." << endl;
-        }
-        // if we encounter the special case of ()
-        else if (topToken.lexeme == ")"){
-            cout << "Popped ')' from the stack." << endl;
-            // if next token on the stack is a left paren then we pop it off the stack as well
-            if (!tokenStack.empty() && tokenStack.top().lexeme == "("){
-                tokenStack.pop();
-                cout << "Popped '(' from the stack." << endl;
-            }
-            else {
-                // we use a temp stack as to store the expression until we find the left paren
-                stack<Token> tempStack;
-                while (!tokenStack.empty() && tokenStack.top().lexeme != "("){
-                    tempStack.push(tokenStack.top());
-                    tokenStack.pop();
-                }
-                // if we find the left paren, we pop it off the stack
-                if (!tokenStack.empty() && tokenStack.top().lexeme == "("){
-                    tokenStack.pop();
-                    cout << "Popped '(' from the stack." << endl;
-                }
-                // we push the expression back into the stack
-                while (!tempStack.empty()){
-                    tokenStack.push(tempStack.top());
-                    tempStack.pop();
-                }
-            }
-        }
-        else {
-            tokenStack.push(topToken); // push back the token if it's not the special case
-        
-        }
     }
 }
 

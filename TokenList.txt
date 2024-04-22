@@ -2,45 +2,20 @@ Token List
 Lexemes:                      Types:
 -----------------------------
 CLASS                         $CLASS
-pgm3                          Identifier
+pgm4                          Identifier
 {                             $LB
-CONST                         $CONST
-M                             Identifier
+IF                            $IF
+A                             Identifier
+>                             $Greater
+B                             Identifier
+THEN                          $THEN
+{                             $LB
+A                             Identifier
 =                             $Assign
-7                             Numeric Literal
-,                             $Comma
-N                             Identifier
-=                             $Assign
-85                            Numeric Literal
-;                             $Semi
-VAR                           $VAR
-X                             Identifier
-,                             $Comma
-Y                             Identifier
-,                             $Comma
-Z                             Identifier
-;                             $Semi
-Y                             Identifier
-=                             $Assign
-M                             Identifier
+A                             Identifier
 +                             $Add
-16                            Numeric Literal
+B                             Identifier
 ;                             $Semi
-X                             Identifier
-=                             $Assign
-2                             Numeric Literal
-+                             $Add
-Y                             Identifier
-;                             $Semi
-Z                             Identifier
-=                             $Assign
-(                             $LP
-X                             Identifier
-+                             $Add
-M                             Identifier
-+                             $Add
-2                             Numeric Literal
-)                             $RP
-;                             $Semi
+}                             $RB
 }                             $RB
 EOF                           EOF
