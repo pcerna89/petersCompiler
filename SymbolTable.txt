@@ -1,14 +1,15 @@
 
 Symbol Table
 Symbol:                       Classification:     Value:    Address:  Segment:
-pgm4                          $PROGRAM NAME                 0         CS
-Temp1                         VAR(int)                      0         DS
-Temp2                         VAR(int)                      2         DS
-Temp3                         VAR(int)                      4         DS
-Temp4                         VAR(int)                      6         DS
-Temp5                         VAR(int)                      8         DS
-Temp6                         VAR(int)                      10        DS
-Temp7                         VAR(int)                      12        DS
-Temp8                         VAR(int)                      14        DS
-Temp9                         VAR(int)                      16        DS
-Temp10                        VAR(int)                      18        DS
+pgm5                          $PROGRAM NAME                 0         CS
+16                            NUMERIC LITERAL     16        0         DS
+Temp1                         VAR(int)                      2         DS
+Temp2                         VAR(int)                      4         DS
+Temp3                         VAR(int)                      6         DS
+Temp4                         VAR(int)                      8         DS
+Temp5                         VAR(int)                      10        DS
+Temp6                         VAR(int)                      12        DS
+Temp7                         VAR(int)                      14        DS
+Temp8                         VAR(int)                      16        DS
+Temp9                         VAR(int)                      18        DS
+Temp10                        VAR(int)                      20        DS

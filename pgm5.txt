@@ -1,1 +1,6 @@
-CLASS pgm5
+CLASS pgm5{
+    IF A + B > C THEN{
+        Y = D + E;
+        JOE = 16;
+    }
+}

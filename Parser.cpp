@@ -97,6 +97,7 @@ void initializeParserTransitionTable(){
     ParserTransitionTable[PARSE_IF][PARSE_MUL] = '<';
     ParserTransitionTable[PARSE_IF][PARSE_DIV] = '<';
     ParserTransitionTable[PARSE_IF][PARSE_LEFTBRACE] = '=';
+    ParserTransitionTable[PARSE_IF][PARSE_THEN] = '=';
     ParserTransitionTable[PARSE_IF][PARSE_ODD] = '<';
     ParserTransitionTable[PARSE_IF][PARSE_EQUALS] = '<';
     ParserTransitionTable[PARSE_IF][PARSE_NOTEQUAL] = '<';
@@ -270,7 +271,7 @@ void Parser::handleOperator (const Token &incomingToken){
         char transition = '?';
         transition = ParserTransitionTable[mostRecentOpClassification][tokenClassification];
         cout << "Most recent operator used: '" << mostRecentOperatorUsed.lexeme << "'." << endl;
-        cout << "Comparing against '" << mostRecentOperatorUsed.lexeme << "' incoming token: '" << incomingToken.lexeme << "'." << endl;
+        cout << "Comparing '" << mostRecentOperatorUsed.lexeme << "' against incoming token: '" << incomingToken.lexeme << "'." << endl;
         if (transition == '>'){
             cout << "Transition found as: '" << transition << "'. Reducing." << endl;
             reduce(incomingToken);
@@ -494,6 +495,7 @@ void Parser::generateThenQuad(){
             "' '" << thenQuad.arg2 << 
             "' '" << thenQuad.result << 
             "'." << endl;
+    releaseTemp(thenQuad.result);
 }
 
 void Parser::generateIfThenQuad(){
