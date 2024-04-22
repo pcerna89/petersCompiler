@@ -313,6 +313,10 @@ void Parser::handleIfThenElse(const Token &currentToken){
     else if (currentToken.lexeme == "THEN"){
         generateThenQuad();
     }
+    else if (currentToken.lexeme == "ELSE")
+    {
+        generateElseQuad();
+    }
 }
 
 void Parser::handleSpecialCases(const Token &currentToken){
@@ -509,6 +513,10 @@ void Parser::generateIfThenQuad(){
             "' '" << ifThenQuad.arg2 << 
             "' '" << ifThenQuad.result << 
             "'." << endl;
+}
+
+void Parser::generateElseQuad(){
+
 }
 
 Token Parser::findLastLowerOperator(){

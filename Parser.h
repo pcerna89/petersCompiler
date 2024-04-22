@@ -82,7 +82,7 @@ class Parser {
     void generateIfQuad(); // generates the if quad
     void generateThenQuad();
     void generateIfThenQuad();
-   
+    void generateElseQuad();
 
 };
 

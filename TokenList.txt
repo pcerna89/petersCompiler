@@ -22,6 +22,30 @@ JOE                           Identifier
 =                             $Assign
 16                            Numeric Literal
 ;                             $Semi
+IF                            $IF
+C                             Identifier
++                             $Add
+D                             Identifier
+<                             $Less
+G                             Identifier
+THEN                          $THEN
+{                             $LB
+SAM                           Identifier
+=                             $Assign
+17                            Numeric Literal
+;                             $Semi
+IF                            $IF
+Z                             Identifier
+<=                            $LessEqual
+23                            Numeric Literal
+THEN                          $THEN
+{                             $LB
+Peter                         Identifier
+=                             $Assign
+35                            Numeric Literal
+;                             $Semi
+}                             $RB
+}                             $RB
 }                             $RB
 }                             $RB
 EOF                           EOF

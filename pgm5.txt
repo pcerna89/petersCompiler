@@ -2,5 +2,11 @@ CLASS pgm5{
     IF A + B > C THEN{
         Y = D + E;
         JOE = 16;
+        IF C + D < G THEN {
+            SAM = 17;
+            IF Z <= 23 THEN {
+                Peter = 35;
+            }
+        }
     }
 }
