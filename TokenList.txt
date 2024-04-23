@@ -2,49 +2,24 @@ Token List
 Lexemes:                      Types:
 -----------------------------
 CLASS                         $CLASS
-pgm5                          Identifier
+pgm6                          Identifier
 {                             $LB
 IF                            $IF
 A                             Identifier
-+                             $Add
-B                             Identifier
 >                             $Greater
+B                             Identifier
+THEN                          $THEN
+{                             $LB
+IF                            $IF
 C                             Identifier
+==                            $Equal
+D                             Identifier
 THEN                          $THEN
 {                             $LB
 Y                             Identifier
 =                             $Assign
-D                             Identifier
-+                             $Add
-E                             Identifier
+A                             Identifier
 ;                             $Semi
-JOE                           Identifier
-=                             $Assign
-16                            Numeric Literal
-;                             $Semi
-IF                            $IF
-C                             Identifier
-+                             $Add
-D                             Identifier
-<                             $Less
-G                             Identifier
-THEN                          $THEN
-{                             $LB
-SAM                           Identifier
-=                             $Assign
-17                            Numeric Literal
-;                             $Semi
-IF                            $IF
-Z                             Identifier
-<=                            $LessEqual
-23                            Numeric Literal
-THEN                          $THEN
-{                             $LB
-Peter                         Identifier
-=                             $Assign
-35                            Numeric Literal
-;                             $Semi
-}                             $RB
 }                             $RB
 }                             $RB
 }                             $RB

@@ -1,0 +1,7 @@
+CLASS pgm6{
+    IF A > B THEN{
+        IF C == D THEN{
+            Y = A;
+        }
+    }
+}
