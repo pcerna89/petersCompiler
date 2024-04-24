@@ -1,0 +1,55 @@
+bool Parser::canReduce(){
+    if (tokenStack.size() < 2) return false; // checking to make sure there are at least 2 tokens on the stack
+    
+    vector<Token> tempStack;
+    bool canReduce = false; // flag to indicate if we can reduce
+
+    // preserve the top token for comparison and continue checking down the stack
+    Token topToken = tokenStack.top();
+    tokenStack.pop();
+    tempStack.push_back(topToken); // push the token onto the temp stack
+
+    ParserClass topTokenClass = identifyTokenToParserClass(topToken);
+
+    while (!tokenStack.empty()){
+        Token currentToken = tokenStack.top(); 
+        ParserClass currentTokenClass = identifyTokenToParserClass(currentToken);
+        cout << "Considering for reduction: " << currentToken.lexeme << ", " << topToken.lexeme << endl;
+        
+
+        char transition = ParserTransitionTable[currentTokenClass][topTokenClass];
+        cout << "Reduction check: " << (transition == '<' ? "TRUE" : "FALSE") << endl;
+        cout << "tempStack currently contains: " << tempStack.size() << " elements." << endl;
+
+        if (tokenStack.empty()) break; // if the stack is empty, break because we started at the bottom and now we here
+
+        if (transition == '>'){
+            canReduce = true;
+            break;
+        }
+        // move to next token
+        tempStack.push_back(currentToken);
+        tokenStack.pop();
+    }
+    // now restore the original stack's state for actual reductions
+    while (!tempStack.empty()){
+        tokenStack.push(tempStack.back());
+        tempStack.pop_back();
+    }
+    return canReduce;
+}
+
+
+
+
+    //go before the function call
+    else if (incomingToken.lexeme == "VAR" || incomingToken.lexeme == "CONST"){
+        cout << "Encountered either VAR or CONST. Ignoring" << endl;
+        return;
+    }
+    else {
+        cout << "Token '"<< incomingToken.lexeme << "' is not an operator. Shifting into the stack." << endl;
+        tokenStack.push(incomingToken);
+    }
+
+    

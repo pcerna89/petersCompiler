@@ -1,0 +1,34 @@
+Token List
+Lexemes:                      Types:
+-----------------------------
+CLASS                         $CLASS
+pgm8                          Identifier
+{                             $LB
+WHILE                         $WHILE
+J                             Identifier
+<                             $Less
+10                            Numeric Literal
+DO                            $DO
+{                             $LB
+J                             Identifier
+=                             $Assign
+J                             Identifier
++                             $Add
+1                             Numeric Literal
+;                             $Semi
+WHILE                         $WHILE
+PETER                         Identifier
+<                             $Less
+34                            Numeric Literal
+DO                            $DO
+{                             $LB
+K                             Identifier
+=                             $Assign
+1                             Numeric Literal
+/                             $Div
+3                             Numeric Literal
+;                             $Semi
+}                             $RB
+}                             $RB
+}                             $RB
+EOF                           EOF

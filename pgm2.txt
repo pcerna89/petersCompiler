@@ -1,0 +1,3 @@
+CLASS pgm2{
+A = A * (A + B);
+}

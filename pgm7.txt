@@ -1,0 +1,13 @@
+CLASS pgm7{
+    IF a > b THEN {
+        IF c == d THEN{
+            y = x;
+        }
+        ELSE {
+            y = z;
+        }
+    }
+    ELSE {
+        m = n;
+    }
+}

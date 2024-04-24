@@ -1,0 +1,16 @@
+{
+    "files.associations": {
+        "string": "cpp",
+        "xstring": "cpp",
+        "istream": "cpp",
+        "iosfwd": "cpp",
+        "fstream": "cpp",
+        "stdexcept": "cpp",
+        "vector": "cpp",
+        "iomanip": "cpp",
+        "xlocbuf": "cpp",
+        "ostream": "cpp",
+        "iostream": "cpp",
+        "stack": "cpp"
+    }
+}
