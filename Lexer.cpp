@@ -3,6 +3,7 @@
 #include "FileReader.h"
 #include "Lexer.h"
 #include <cctype>
+#include <algorithm>
 
 using namespace std;
 

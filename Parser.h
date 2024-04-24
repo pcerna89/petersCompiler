@@ -5,6 +5,7 @@
 #include "Lexer.h"
 #include <stack>
 #include <set>
+#include <algorithm>
 using namespace std;
 
 enum ParserClass { // our different parser states
