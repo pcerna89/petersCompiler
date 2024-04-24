@@ -1,5 +1,6 @@
 
-// main.cpp by Peter Cerna
+// main.cpp by Peter Cerna 
+// test
 #include "StateTransitionTable.h"
 #include "Lexer.h"
 #include "SymbolTable.h"
