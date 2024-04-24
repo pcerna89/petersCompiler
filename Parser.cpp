@@ -211,16 +211,16 @@ void printStack(const stack<Token> &tokenStack){ /// change later so it's in the
         printStack.pop();
     }
 
-    cout << "Stack Contents:" << endl;
-    for (auto it = tempVector.rbegin(); it != tempVector.rend(); ++it){ // reverse iterator
-        cout << it->lexeme << endl; 
+    cout << "Stack Contents:\n\n" << endl;
+    for (const Token &token : tempVector){
+        cout << token.lexeme << endl;
     }
     cout << "----------------------" << endl;
     cout << endl;
 }
 
 void Parser::printQuadStack(){
-    cout << "Quad Stack Contents:" << endl;
+    cout << "Quad Stack Contents:\n" << endl;
     stack<Quad> tempStack = quadStack; // copy the stack to preserve the original
     vector<Quad> tempVector; 
 
@@ -286,7 +286,7 @@ void Parser::parse(){ // main parse loop
         if (!skipTokenUntilDelimiter && identifyTokenToParserClass(currentToken) == NON_OP){
             if (currentToken.lexeme != ";" && currentToken.lexeme != ","){
                 tokenStack.push(currentToken);
-                cout << "Pushed non-operator onto the stack: '" << currentToken.lexeme << "'" << endl;
+                cout << "Pushed non-operator onto the stack: '" << currentToken.lexeme << "'." << endl;
             }
             else {
                 cout << "Enountered a ';' or ','. Skipping token." << endl;
@@ -301,23 +301,27 @@ void Parser::parse(){ // main parse loop
         if (currentToken.lexeme == "}" && tokenStack.top().lexeme == "ELSE"){
             popIfThenElse(currentToken);
         }
+
+        if (currentToken.lexeme == "}" && tokenStack.top().lexeme == "DO"){
+            popWhileDo(currentToken);
+        }
     
       
         handleOperator(currentToken);
         handleSpecialCases(currentToken);
         handleIfThenElse(currentToken);
-        //cout << "About to loop again. "<< currentToken.lexeme << endl;
+        handleWhileDo(currentToken);
         printStack(tokenStack);
     }
     printQuadStack();
 }
 
 void Parser::popIfThen(const Token &currentToken){
-    cout << "Popped '"<< tokenStack.top().lexeme << "' from the stack." << endl;
+    cout << "Popped 'THEN' from the stack." << endl;
     tokenStack.pop(); // pop off the THEN
     if (tokenStack.top().lexeme == "IF"){
         tokenStack.pop(); // pop
-        cout << "Popped '"<< tokenStack.top().lexeme << "' from the stack." << endl;
+        cout << "Popped 'IF' from the stack." << endl;
         generateIfThenQuad();
         printStack(tokenStack);
     }
@@ -328,14 +332,25 @@ void Parser::popIfThenElse(const Token &currentToken){
     tokenStack.pop(); // pop off the ELSE
 
     if (tokenStack.top().lexeme == "THEN"){
-        cout << "Popped '"<< tokenStack.top().lexeme << "' from the stack." << endl;
+        cout << "Popped 'THEN' from the stack." << endl;
         tokenStack.pop(); // pop off the THEN
         if (tokenStack.top().lexeme == "IF"){
-        cout << "Popped '"<< tokenStack.top().lexeme << "' from the stack." << endl;
+        cout << "Popped 'IF' from the stack." << endl;
         tokenStack.pop(); // pop off the IF
         generateIfThenElseQuad();
         printStack(tokenStack);
         }
+    }
+}
+
+void Parser::popWhileDo(const Token &currentToken){
+    cout << "Popped 'DO' from the stack." << endl;
+    tokenStack.pop(); // pop off the DO
+    if (tokenStack.top().lexeme == "WHILE"){
+        cout << "Popped 'WHILE' from the stack." << endl;
+        tokenStack.pop(); // pop off the WHILE
+        generateWhileDoQuad();
+        printStack(tokenStack);
     }
 }
 
@@ -440,6 +455,15 @@ void Parser::handleIfThenElse(const Token &currentToken){
     else if (currentToken.lexeme == "ELSE")
     {
         generateElseQuad();
+    }
+}
+
+void Parser::handleWhileDo(const Token &currentToken){
+    if (currentToken.lexeme == "WHILE"){
+        generateWhileQuad();
+    }
+    else if (currentToken.lexeme == "DO"){
+        generateDoQuad();
     }
 }
 
@@ -561,7 +585,7 @@ void Parser::generateThenQuad(){
             "' '" << thenQuad.arg2 << 
             "' '" << thenQuad.result << 
             "'." << endl;
-    releaseTemp(thenQuad.result);
+    releaseTemp(thenQuad.result); 
 }
 
 void Parser::generateElseQuad(){
@@ -591,6 +615,42 @@ void Parser::generateElseQuad(){
     cout << "Popped label for THEN from fixup stack: '" << thenLabel << "'." << endl;
 }
 
+void Parser::generateWhileQuad(){
+    string whileLabel = generateWhileLabel(); // generate a label for our WHILE
+    whileStack.push(whileLabel); // push the label onto the while stack
+    cout << "Generated and pushed label for WHILE to while stack: '" << whileLabel << "'." << endl;
+
+    Quad whileQuad = {"WHILE", whileLabel, "?", "?"};
+    quadStack.push(whileQuad);
+    cout << "Generated WHILE Quad: '" << whileQuad.op << 
+            "' '" << whileQuad.arg1 << 
+            "' '" << whileQuad.arg2 << 
+            "' '" << whileQuad.result << 
+            "'." << endl;
+}
+
+void Parser::generateDoQuad(){
+    string doLabel = generateLabel(); // generate a label for our DO
+    fixUpStack.push(doLabel); // push the label onto the fixup stack
+    cout << "Generated and pushed label for DO to fixup stack: '" << doLabel << "'." << endl;
+    string condition;
+
+    if (!quadStack.empty()){
+        Quad topQuad = quadStack.top();
+        condition = topQuad.op;
+    }
+
+    string oppositeCondition = invertCondition(condition);
+    Quad doQuad = {"DO", doLabel, oppositeCondition, "?"};
+    quadStack.push(doQuad);
+    cout << "Generated DO Quad: '" << doQuad.op << 
+            "' '" << doQuad.arg1 << 
+            "' '" << doQuad.arg2 << 
+            "' '" << doQuad.result << 
+            "'." << endl;
+    releaseTemp(doQuad.result); 
+}
+
 void Parser::generateIfThenQuad(){
     string thenLabel = fixUpStack.top(); // get the label from the fixup stack
     fixUpStack.pop(); // pop the label off the fixup stack
@@ -617,6 +677,32 @@ void Parser::generateIfThenElseQuad(){
             "' '" << ifThenElseQuad.arg2 << 
             "' '" << ifThenElseQuad.result << 
             "'." << endl;
+}
+
+void Parser::generateWhileDoQuad(){
+    string whileLabel = whileStack.top(); // get the label from the while stack
+    string doLabel = fixUpStack.top(); // get the label from the fixup stack
+
+    Quad whileDoQuad = {whileLabel, "?", "?", "?"};
+    quadStack.push(whileDoQuad);
+    cout << "Generated WHILE DO Quad: '" << whileDoQuad.op << 
+            "' '" << whileDoQuad.arg1 << 
+            "' '" << whileDoQuad.arg2 << 
+            "' '" << whileDoQuad.result << 
+            "'." << endl;
+    whileStack.pop(); // pop the label off the while stack
+    cout << "Popped label for WHILE from while stack: '" << whileLabel << "'." << endl;
+
+    Quad doQuad = {doLabel, "?", "?", "?"};
+    quadStack.push(doQuad);
+    cout << "Generated WHILE DO Quad: '" << doQuad.op << 
+            "' '" << doQuad.arg1 << 
+            "' '" << doQuad.arg2 << 
+            "' '" << doQuad.result << 
+            "'." << endl;
+    fixUpStack.pop(); // pop the label off the fixup stack
+    cout << "Popped label for DO from fixup stack: '" << doLabel << "'." << endl;
+    
 }
 
 Token Parser::peekNextToken(){
@@ -662,6 +748,11 @@ string Parser::generateLabel(){
     return "L" + to_string(labelCounter++); // return the label
 }
 
+string Parser::generateWhileLabel(){
+    static int whileLabelCounter = 1; // static counter to keep track of the label
+    return "W" + to_string(whileLabelCounter++); // return the label
+}
+
 string Parser::invertCondition(const string &condition){ // invert the condition of our boolean expression
     if (condition == "==") return "NE";
     if (condition == "!=") return "E";
@@ -705,6 +796,8 @@ ParserClass Parser::identifyTokenToParserClass(const Token &token){
     if (token.lexeme == "/") return PARSE_DIV;
     if (token.lexeme == "IF") return PARSE_IF;
     if (token.lexeme == "THEN") return PARSE_THEN;
+    if (token.lexeme == "WHILE") return PARSE_WHILE;
+    if (token.lexeme == "DO") return PARSE_DO;
     if (token.lexeme == "ODD") return PARSE_ODD;
     if (token.lexeme == "==") return PARSE_EQUALS;
     if (token.lexeme == "!=") return PARSE_NOTEQUAL;

@@ -65,6 +65,7 @@ class Parser {
     stack<string> fixUpStack; // stack to hold our fixups
     stack<string> endStack; // stack to hold our else ends
     size_t currentIndex; // current index of the token
+    stack<string> whileStack; // stack to hold our whiles
     
 
     // parser helper functions
@@ -83,6 +84,9 @@ class Parser {
     Token peekPrevToken(); // peeks at the previous token
     void popIfThen(const Token &currentToken); // pops the if then
     void popIfThenElse(const Token &currentToken); // pops the if then else
+    string generateWhileLabel(); // generates a label for our while statements
+    void handleWhileDo(const Token &currentToken); // handles the while do statement
+    void popWhileDo(const Token &currentToken); // pops the while do
 
     void generateArithmeticQuad(const Token &operatorToken, const Token &leftOperand, const Token &rightOperand); // generates the arithmetic quad
     void generateAssignmentQuad(const Token &leftOperand, const Token &rightOperand); // generates the assignment quad
@@ -92,6 +96,9 @@ class Parser {
     void generateIfThenQuad();
     void generateElseQuad();
     void generateIfThenElseQuad();
+    void generateWhileQuad();
+    void generateDoQuad();
+    void generateWhileDoQuad();
 
 };
 
