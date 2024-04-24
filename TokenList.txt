@@ -2,25 +2,26 @@ Token List
 Lexemes:                      Types:
 -----------------------------
 CLASS                         $CLASS
-pgm6                          Identifier
+pgm5                          Identifier
 {                             $LB
 IF                            $IF
 A                             Identifier
->                             $Greater
++                             $Add
 B                             Identifier
-THEN                          $THEN
-{                             $LB
-IF                            $IF
+>                             $Greater
 C                             Identifier
-==                            $Equal
-D                             Identifier
 THEN                          $THEN
 {                             $LB
 Y                             Identifier
 =                             $Assign
-A                             Identifier
+D                             Identifier
++                             $Add
+E                             Identifier
 ;                             $Semi
-}                             $RB
+JOE                           Identifier
+=                             $Assign
+16                            Numeric Literal
+;                             $Semi
 }                             $RB
 }                             $RB
 EOF                           EOF

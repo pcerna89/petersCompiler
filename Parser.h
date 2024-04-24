@@ -18,6 +18,9 @@ enum ParserClass { // our different parser states
     PARSE_DIV,
     PARSE_IF,
     PARSE_THEN,
+    PARSE_ELSE,
+    PARSE_WHILE,
+    PARSE_DO,
     PARSE_ODD,
     PARSE_EQUALS,
     PARSE_NOTEQUAL,
@@ -29,14 +32,13 @@ enum ParserClass { // our different parser states
     PARSE_RIGHTBRACE,
     PARSE_CALL,
     PARSE_PROC,
-    PARSE_ELSE,
     PARSE_COMMA,
     PARSE_GET,
     PARSE_PUT,
     NON_OP
 };
 
-const int PARSER_STATES = 26;
+const int PARSER_STATES = 28;
 extern char ParserTransitionTable[PARSER_STATES][PARSER_STATES];
 void initializeParserTransitionTable();
 
@@ -61,6 +63,9 @@ class Parser {
     vector<string> tempVariables; // vector to hold our temporary variables
     set<int> availableTemps;
     stack<string> fixUpStack; // stack to hold our fixups
+    stack<string> endStack; // stack to hold our else ends
+    size_t currentIndex; // current index of the token
+    
 
     // parser helper functions
     void handleOperator(const Token &incomingToken); // handles the operator
@@ -73,8 +78,11 @@ class Parser {
     void releaseTemp(const string &temp); // releases a temporary variable
     void handleIfThenElse(const Token &currentToken); // handles the if then else statement
     string invertCondition(const string &condition); // inverts the condition
-    string generateLabel(); // generates a label for our THEN
-
+    string generateLabel(); // generates a label for our THEN and ELSE statements
+    Token peekNextToken(); // peeks at the next token
+    Token peekPrevToken(); // peeks at the previous token
+    void popIfThen(const Token &currentToken); // pops the if then
+    void popIfThenElse(const Token &currentToken); // pops the if then else
 
     void generateArithmeticQuad(const Token &operatorToken, const Token &leftOperand, const Token &rightOperand); // generates the arithmetic quad
     void generateAssignmentQuad(const Token &leftOperand, const Token &rightOperand); // generates the assignment quad
@@ -83,6 +91,7 @@ class Parser {
     void generateThenQuad();
     void generateIfThenQuad();
     void generateElseQuad();
+    void generateIfThenElseQuad();
 
 };
 

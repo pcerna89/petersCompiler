@@ -51,3 +51,5 @@ bool Parser::canReduce(){
         cout << "Token '"<< incomingToken.lexeme << "' is not an operator. Shifting into the stack." << endl;
         tokenStack.push(incomingToken);
     }
+
+    

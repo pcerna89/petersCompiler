@@ -8,6 +8,7 @@ char ParserTransitionTable[PARSER_STATES][PARSER_STATES];
 // fill with a for loop
 void initializeParserTransitionTable(){
     ParserTransitionTable[PARSE_SEMI][PARSE_ASSIGN] = '<';
+    ParserTransitionTable[PARSE_SEMI][PARSE_LEFTBRACE] = '<';
 
     ParserTransitionTable[PARSE_ASSIGN][PARSE_SEMI] = '>';
     ParserTransitionTable[PARSE_ASSIGN][PARSE_PLUS] = '<';
@@ -31,6 +32,7 @@ void initializeParserTransitionTable(){
     ParserTransitionTable[PARSE_PLUS][PARSE_LESS] = '>';
     ParserTransitionTable[PARSE_PLUS][PARSE_GREATEREQUAL] = '>';
     ParserTransitionTable[PARSE_PLUS][PARSE_LESSEQUAL] = '>';
+    ParserTransitionTable[PARSE_PLUS][PARSE_DO] = '>';
 
     ParserTransitionTable[PARSE_MINUS][PARSE_SEMI] = '>';
     ParserTransitionTable[PARSE_MINUS][PARSE_PLUS] = '>';
@@ -46,6 +48,7 @@ void initializeParserTransitionTable(){
     ParserTransitionTable[PARSE_MINUS][PARSE_LESS] = '>';
     ParserTransitionTable[PARSE_MINUS][PARSE_GREATEREQUAL] = '>';
     ParserTransitionTable[PARSE_MINUS][PARSE_LESSEQUAL] = '>';
+    ParserTransitionTable[PARSE_MINUS][PARSE_DO] = '>';
 
     ParserTransitionTable[PARSE_LEFTPAREN][PARSE_PLUS] = '<';
     ParserTransitionTable[PARSE_LEFTPAREN][PARSE_MINUS] = '<';
@@ -75,6 +78,7 @@ void initializeParserTransitionTable(){
     ParserTransitionTable[PARSE_MUL][PARSE_LESS] = '>';
     ParserTransitionTable[PARSE_MUL][PARSE_GREATEREQUAL] = '>';
     ParserTransitionTable[PARSE_MUL][PARSE_LESSEQUAL] = '>';
+    ParserTransitionTable[PARSE_MUL][PARSE_DO] = '>';
 
     ParserTransitionTable[PARSE_DIV][PARSE_SEMI] = '>';
     ParserTransitionTable[PARSE_DIV][PARSE_PLUS] = '>';
@@ -90,13 +94,13 @@ void initializeParserTransitionTable(){
     ParserTransitionTable[PARSE_DIV][PARSE_LESS] = '>';
     ParserTransitionTable[PARSE_DIV][PARSE_GREATEREQUAL] = '>';
     ParserTransitionTable[PARSE_DIV][PARSE_LESSEQUAL] = '>';
+    ParserTransitionTable[PARSE_DIV][PARSE_DO] = '>';
 
     ParserTransitionTable[PARSE_IF][PARSE_PLUS] = '<';
     ParserTransitionTable[PARSE_IF][PARSE_MINUS] = '<';
     ParserTransitionTable[PARSE_IF][PARSE_LEFTPAREN] = '<';
     ParserTransitionTable[PARSE_IF][PARSE_MUL] = '<';
     ParserTransitionTable[PARSE_IF][PARSE_DIV] = '<';
-    ParserTransitionTable[PARSE_IF][PARSE_LEFTBRACE] = '=';
     ParserTransitionTable[PARSE_IF][PARSE_THEN] = '=';
     ParserTransitionTable[PARSE_IF][PARSE_ODD] = '<';
     ParserTransitionTable[PARSE_IF][PARSE_EQUALS] = '<';
@@ -110,6 +114,32 @@ void initializeParserTransitionTable(){
     ParserTransitionTable[PARSE_THEN][PARSE_IF] = '<';
     ParserTransitionTable[PARSE_THEN][PARSE_LEFTBRACE] = '<';
     ParserTransitionTable[PARSE_THEN][PARSE_CALL] = '<';
+    ParserTransitionTable[PARSE_THEN][PARSE_WHILE] = '<';
+
+    ParserTransitionTable[PARSE_ELSE][PARSE_ASSIGN] = '<';
+    ParserTransitionTable[PARSE_ELSE][PARSE_IF] = '<';
+    ParserTransitionTable[PARSE_ELSE][PARSE_LEFTBRACE] = '<';
+    ParserTransitionTable[PARSE_ELSE][PARSE_WHILE] = '<';
+
+    ParserTransitionTable[PARSE_WHILE][PARSE_PLUS] = '<';
+    ParserTransitionTable[PARSE_WHILE][PARSE_MINUS] = '<';
+    ParserTransitionTable[PARSE_WHILE][PARSE_LEFTPAREN] = '<';
+    ParserTransitionTable[PARSE_WHILE][PARSE_MUL] = '<';
+    ParserTransitionTable[PARSE_WHILE][PARSE_DIV] = '<';
+    ParserTransitionTable[PARSE_WHILE][PARSE_DO] = '=';
+    ParserTransitionTable[PARSE_WHILE][PARSE_ODD] = '<';
+    ParserTransitionTable[PARSE_WHILE][PARSE_EQUALS] = '<';
+    ParserTransitionTable[PARSE_WHILE][PARSE_NOTEQUAL] = '<';
+    ParserTransitionTable[PARSE_WHILE][PARSE_GREATER] = '<';
+    ParserTransitionTable[PARSE_WHILE][PARSE_LESS] = '<';
+    ParserTransitionTable[PARSE_WHILE][PARSE_GREATEREQUAL] = '<';
+    ParserTransitionTable[PARSE_WHILE][PARSE_LESSEQUAL] = '<';
+
+    ParserTransitionTable[PARSE_DO][PARSE_ASSIGN] = '<';
+    ParserTransitionTable[PARSE_DO][PARSE_IF] = '<';
+    ParserTransitionTable[PARSE_DO][PARSE_WHILE] = '<';
+    ParserTransitionTable[PARSE_DO][PARSE_LEFTBRACE] = '<';
+    ParserTransitionTable[PARSE_DO][PARSE_CALL] = '<';
 
     ParserTransitionTable[PARSE_ODD][PARSE_PLUS] = '<';
     ParserTransitionTable[PARSE_ODD][PARSE_MINUS] = '<';
@@ -117,6 +147,7 @@ void initializeParserTransitionTable(){
     ParserTransitionTable[PARSE_ODD][PARSE_MUL] = '<';
     ParserTransitionTable[PARSE_ODD][PARSE_DIV] = '<';
     ParserTransitionTable[PARSE_ODD][PARSE_THEN] = '>';
+    ParserTransitionTable[PARSE_ODD][PARSE_DO] = '>';
 
     ParserTransitionTable[PARSE_EQUALS][PARSE_PLUS] = '<';
     ParserTransitionTable[PARSE_EQUALS][PARSE_MINUS] = '<';
@@ -124,6 +155,7 @@ void initializeParserTransitionTable(){
     ParserTransitionTable[PARSE_EQUALS][PARSE_MUL] = '<';
     ParserTransitionTable[PARSE_EQUALS][PARSE_DIV] = '<';
     ParserTransitionTable[PARSE_EQUALS][PARSE_THEN] = '>';
+    ParserTransitionTable[PARSE_EQUALS][PARSE_DO] = '>';
 
     ParserTransitionTable[PARSE_NOTEQUAL][PARSE_PLUS] = '<';
     ParserTransitionTable[PARSE_NOTEQUAL][PARSE_MINUS] = '<';
@@ -131,6 +163,7 @@ void initializeParserTransitionTable(){
     ParserTransitionTable[PARSE_NOTEQUAL][PARSE_MUL] = '<';
     ParserTransitionTable[PARSE_NOTEQUAL][PARSE_DIV] = '<';
     ParserTransitionTable[PARSE_NOTEQUAL][PARSE_THEN] = '>';
+    ParserTransitionTable[PARSE_NOTEQUAL][PARSE_DO] = '>';
 
     ParserTransitionTable[PARSE_GREATER][PARSE_PLUS] = '<';
     ParserTransitionTable[PARSE_GREATER][PARSE_MINUS] = '<';
@@ -138,6 +171,7 @@ void initializeParserTransitionTable(){
     ParserTransitionTable[PARSE_GREATER][PARSE_MUL] = '<';
     ParserTransitionTable[PARSE_GREATER][PARSE_DIV] = '<';
     ParserTransitionTable[PARSE_GREATER][PARSE_THEN] = '>';
+    ParserTransitionTable[PARSE_GREATER][PARSE_DO] = '>';
 
     ParserTransitionTable[PARSE_LESS][PARSE_PLUS] = '<';
     ParserTransitionTable[PARSE_LESS][PARSE_MINUS] = '<';
@@ -145,6 +179,7 @@ void initializeParserTransitionTable(){
     ParserTransitionTable[PARSE_LESS][PARSE_MUL] = '<';
     ParserTransitionTable[PARSE_LESS][PARSE_DIV] = '<';
     ParserTransitionTable[PARSE_LESS][PARSE_THEN] = '>';
+    ParserTransitionTable[PARSE_LESS][PARSE_DO] = '>';
 
     ParserTransitionTable[PARSE_GREATEREQUAL][PARSE_PLUS] = '<';
     ParserTransitionTable[PARSE_GREATEREQUAL][PARSE_MINUS] = '<';
@@ -152,6 +187,7 @@ void initializeParserTransitionTable(){
     ParserTransitionTable[PARSE_GREATEREQUAL][PARSE_MUL] = '<';
     ParserTransitionTable[PARSE_GREATEREQUAL][PARSE_DIV] = '<';
     ParserTransitionTable[PARSE_GREATEREQUAL][PARSE_THEN] = '>';
+    ParserTransitionTable[PARSE_GREATEREQUAL][PARSE_DO] = '>';
 
     ParserTransitionTable[PARSE_LESSEQUAL][PARSE_PLUS] = '<';
     ParserTransitionTable[PARSE_LESSEQUAL][PARSE_MINUS] = '<';
@@ -159,6 +195,7 @@ void initializeParserTransitionTable(){
     ParserTransitionTable[PARSE_LESSEQUAL][PARSE_MUL] = '<';
     ParserTransitionTable[PARSE_LESSEQUAL][PARSE_DIV] = '<';
     ParserTransitionTable[PARSE_LESSEQUAL][PARSE_THEN] = '>';
+    ParserTransitionTable[PARSE_LESSEQUAL][PARSE_DO] = '>';
 
 }
 
@@ -212,8 +249,12 @@ void Parser::parse(){ // main parse loop
     cout << "\nPushed initial Schwartz onto the stack.\n" << endl;
     printStack(tokenStack);
 
-    for (const auto &currentToken : tokens){
+    for (currentIndex = 0; currentIndex < tokens.size(); ++currentIndex){
+        Token currentToken = tokens[currentIndex];
         cout << "Incoming token: '" <<  currentToken.lexeme << "'." << endl;
+
+        Token nextToken = peekNextToken();
+        Token prevToken = peekPrevToken();
 
         if (skipTokenUntilOpeningBrace){
             if (currentToken.lexeme == "{"){
@@ -251,16 +292,99 @@ void Parser::parse(){ // main parse loop
                 cout << "Enountered a ';' or ','. Skipping token." << endl;
             }
         }
-        else {
-            handleOperator(currentToken);
-            handleIfThenElse(currentToken);
-            handleSpecialCases(currentToken);
+
+
+        if (currentToken.lexeme == "}" && tokenStack.top().lexeme == "THEN" && peekNextToken().lexeme != "ELSE"){
+            popIfThen(currentToken);
         }
+        
+        if (currentToken.lexeme == "}" && tokenStack.top().lexeme == "ELSE"){
+            popIfThenElse(currentToken);
+        }
+    
+      
+        handleOperator(currentToken);
+        handleSpecialCases(currentToken);
+        handleIfThenElse(currentToken);
+        //cout << "About to loop again. "<< currentToken.lexeme << endl;
         printStack(tokenStack);
     }
     printQuadStack();
 }
 
+void Parser::popIfThen(const Token &currentToken){
+    cout << "Popped '"<< tokenStack.top().lexeme << "' from the stack." << endl;
+    tokenStack.pop(); // pop off the THEN
+    if (tokenStack.top().lexeme == "IF"){
+        tokenStack.pop(); // pop
+        cout << "Popped '"<< tokenStack.top().lexeme << "' from the stack." << endl;
+        generateIfThenQuad();
+        printStack(tokenStack);
+    }
+}
+
+void Parser::popIfThenElse(const Token &currentToken){
+    cout << "Popped '"<< tokenStack.top().lexeme << "' from the stack." << endl;
+    tokenStack.pop(); // pop off the ELSE
+
+    if (tokenStack.top().lexeme == "THEN"){
+        cout << "Popped '"<< tokenStack.top().lexeme << "' from the stack." << endl;
+        tokenStack.pop(); // pop off the THEN
+        if (tokenStack.top().lexeme == "IF"){
+        cout << "Popped '"<< tokenStack.top().lexeme << "' from the stack." << endl;
+        tokenStack.pop(); // pop off the IF
+        generateIfThenElseQuad();
+        printStack(tokenStack);
+        }
+    }
+}
+
+void Parser::handleSpecialCases(const Token &currentToken){
+    if (tokenStack.size() >= 2){
+        // top token is temporarily removed to examine the next one
+        Token topToken = tokenStack.top();
+        tokenStack.pop();
+        Token secondToken = tokenStack.top();
+        // if we encounter the special case of {}
+        if (topToken.lexeme == "}" && secondToken.lexeme == "{"){
+            tokenStack.pop(); 
+            cout << "Popped '}' and '{' from the stack." << endl;
+            printStack(tokenStack);
+        }
+        // if we encounter the special case of ()
+        else if (topToken.lexeme == ")"){
+            cout << "Popped ')' from the stack." << endl;
+            // if next token on the stack is a left paren then we pop it off the stack as well
+            if (!tokenStack.empty() && tokenStack.top().lexeme == "("){
+                tokenStack.pop();
+                cout << "Popped '(' from the stack." << endl;
+            }
+            else {
+                // we use a temp stack as to store the expression until we find the left paren
+                stack<Token> tempStack;
+                while (!tokenStack.empty() && tokenStack.top().lexeme != "("){
+                    tempStack.push(tokenStack.top());
+                    tokenStack.pop();
+                }
+                // if we find the left paren, we pop it off the stack
+                if (!tokenStack.empty() && tokenStack.top().lexeme == "("){
+                    tokenStack.pop();
+                    cout << "Popped '(' from the stack." << endl;
+                }
+                // we push the expression back into the stack
+                while (!tempStack.empty()){
+                    tokenStack.push(tempStack.top());
+                    tempStack.pop();
+                }
+            }
+        }
+        else {
+            tokenStack.push(topToken); // push back the token if it's not the special case
+            //cout << "Pushed '" << topToken.lexeme << "' back onto the stack." << endl;
+        
+        }
+    }
+}
 
 void Parser::handleOperator (const Token &incomingToken){
     // map before hand
@@ -271,7 +395,7 @@ void Parser::handleOperator (const Token &incomingToken){
         char transition = '?';
         transition = ParserTransitionTable[mostRecentOpClassification][tokenClassification];
         cout << "Most recent operator used: '" << mostRecentOperatorUsed.lexeme << "'." << endl;
-        cout << "Comparing '" << mostRecentOperatorUsed.lexeme << "' against incoming token: '" << incomingToken.lexeme << "'." << endl;
+        cout << "Comparing '" << mostRecentOperatorUsed.lexeme << "' against incoming token '" << incomingToken.lexeme << "'." << endl;
         if (transition == '>'){
             cout << "Transition found as: '" << transition << "'. Reducing." << endl;
             reduce(incomingToken);
@@ -279,7 +403,7 @@ void Parser::handleOperator (const Token &incomingToken){
         else if (transition == '<'){
             cout << "Transition found as: " << transition << ". Shifting into the stack." << endl;
             tokenStack.push(incomingToken);
-            cout << "Test: Pushing '" << incomingToken.lexeme << "' onto the stack." << endl;
+            cout << "Pushing '" << incomingToken.lexeme << "' onto the stack." << endl;
             mostRecentOperatorUsed = incomingToken;
             //printStack(tokenStack);
         }
@@ -316,66 +440,6 @@ void Parser::handleIfThenElse(const Token &currentToken){
     else if (currentToken.lexeme == "ELSE")
     {
         generateElseQuad();
-    }
-}
-
-void Parser::handleSpecialCases(const Token &currentToken){
-    if (tokenStack.size() >= 2){
-        Token topToken = tokenStack.top();
-        tokenStack.pop();
-        Token secondToken = tokenStack.top();
-
-        // if we encounter the special case of {}
-        if (topToken.lexeme == "}" && secondToken.lexeme == "{"){
-            tokenStack.pop(); 
-            cout << "Popped '}' and '{' from the stack." << endl;
-            printStack(tokenStack);
-
-        }
-        // if we encounter the special case of ()
-        else if (topToken.lexeme == ")"){
-            cout << "Popped ')' from the stack." << endl;
-            // if next token on the stack is a left paren then we pop it off the stack as well
-            if (!tokenStack.empty() && tokenStack.top().lexeme == "("){
-                tokenStack.pop();
-                cout << "Popped '(' from the stack." << endl;
-            }
-            else {
-                // we use a temp stack as to store the expression until we find the left paren
-                stack<Token> tempStack;
-                while (!tokenStack.empty() && tokenStack.top().lexeme != "("){
-                    tempStack.push(tokenStack.top());
-                    tokenStack.pop();
-                }
-                // if we find the left paren, we pop it off the stack
-                if (!tokenStack.empty() && tokenStack.top().lexeme == "("){
-                    tokenStack.pop();
-                    cout << "Popped '(' from the stack." << endl;
-                }
-                // we push the expression back into the stack
-                while (!tempStack.empty()){
-                    tokenStack.push(tempStack.top());
-                    tempStack.pop();
-                }
-            }
-        }
-        if (currentToken.lexeme == "}"){
-            if (!tokenStack.empty() && tokenStack.top().lexeme == "THEN"){
-                tokenStack.pop(); // pop off the THEN
-                cout << "Popped 'THEN' from the stack." << endl;
-                printStack(tokenStack);
-                if (!tokenStack.empty() && tokenStack.top().lexeme == "IF"){
-                    tokenStack.pop(); // pop off the IF
-                    cout << "Popped 'IF' from the stack." << endl;
-                    generateIfThenQuad();
-                    printStack(tokenStack);
-                }
-            }
-        }
-        else {
-            tokenStack.push(topToken); // push back the token if it's not the special case
-        
-        }
     }
 }
 
@@ -446,8 +510,7 @@ void Parser::generateArithmeticQuad(const Token &operatorToken, const Token &lef
 }
 
 void Parser::generateAssignmentQuad(const Token &leftOperand, const Token &rightOperand){
-    string resultTempVariable = getTemp();
-    Quad assQuad = {"=", leftOperand.lexeme, resultTempVariable, "?"};
+    Quad assQuad = {"=", leftOperand.lexeme, rightOperand.lexeme, "?"};
 
     quadStack.push(assQuad);
     cout << "Generated Assignment Quad: '" << assQuad.op << 
@@ -455,7 +518,6 @@ void Parser::generateAssignmentQuad(const Token &leftOperand, const Token &right
             "' '" << assQuad.arg2 << 
             "' '" << assQuad.result <<
             "'." <<  endl;
-    releaseTemp(resultTempVariable);
 }
 
 void Parser::generateRelationalQuad(const Token &operatorToken, const Token &leftOperand, const Token &rightOperand){
@@ -502,9 +564,37 @@ void Parser::generateThenQuad(){
     releaseTemp(thenQuad.result);
 }
 
+void Parser::generateElseQuad(){
+    string elseLabel = generateLabel(); // generate a label for our ELSE
+    endStack.push(elseLabel); // push the label onto the end stack
+    cout << "Generated and pushed label for ELSE to end stack: '" << elseLabel << "'." << endl;
+
+    Quad elseQuad = {"ELSE", elseLabel, "?", "?"};
+    quadStack.push(elseQuad);
+
+    cout << "Generated ELSE Quad: '" << elseQuad.op << 
+            "' '" << elseQuad.arg1 << 
+            "' '" << elseQuad.arg2 << 
+            "' '" << elseQuad.result << 
+            "'." << endl;
+
+    string thenLabel = fixUpStack.top(); // get the label from the fixup stack
+    Quad labelQuad = {thenLabel, "?", "?", "?"};
+    quadStack.push(labelQuad);
+    cout << "Generated ELSE Quad: '" << elseQuad.op << 
+            "' '" << elseQuad.arg1 << 
+            "' '" << elseQuad.arg2 << 
+            "' '" << elseQuad.result << 
+            "'." << endl;
+
+    fixUpStack.pop(); // pop the label off the fixup stack
+    cout << "Popped label for THEN from fixup stack: '" << thenLabel << "'." << endl;
+}
+
 void Parser::generateIfThenQuad(){
     string thenLabel = fixUpStack.top(); // get the label from the fixup stack
     fixUpStack.pop(); // pop the label off the fixup stack
+    cout << "Popped label for THEN from fixup stack: '" << thenLabel << "'." << endl;
 
     Quad ifThenQuad = {thenLabel, "?", "?", "?"};
     quadStack.push(ifThenQuad);
@@ -515,8 +605,34 @@ void Parser::generateIfThenQuad(){
             "'." << endl;
 }
 
-void Parser::generateElseQuad(){
+void Parser::generateIfThenElseQuad(){
+    string elseLabel = endStack.top(); // get the label from the end stack
+    endStack.pop(); // pop the label off the end stack
+    cout << "Popped label for ELSE from end stack: '" << elseLabel << "'." << endl;
 
+    Quad ifThenElseQuad = {elseLabel, "?", "?", "?"};
+    quadStack.push(ifThenElseQuad);
+    cout << "Generated IF THEN ELSE Quad: '" << ifThenElseQuad.op << 
+            "' '" << ifThenElseQuad.arg1 << 
+            "' '" << ifThenElseQuad.arg2 << 
+            "' '" << ifThenElseQuad.result << 
+            "'." << endl;
+}
+
+Token Parser::peekNextToken(){
+    if (currentIndex + 1 < tokens.size()){
+        //cout << "Peeked at next token: '" << tokens[currentIndex + 1].lexeme << "'." << endl;
+        return tokens[currentIndex + 1];
+    }
+    return Token();
+}
+
+Token Parser::peekPrevToken(){
+    if (currentIndex > 0){
+        //cout << "Peeked at prev token: '" << tokens[currentIndex - 1].lexeme << "'." << endl;
+        return tokens[currentIndex - 1];
+    }
+    return Token();
 }
 
 Token Parser::findLastLowerOperator(){
