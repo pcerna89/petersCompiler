@@ -55,7 +55,7 @@ _start: nop
 	mov ax, [ReadInt]
 	mov [J], ax
 
-	W1:
+W1:
 
 	mov ax, [J]
 	cmp ax, [Lit10] 
@@ -68,7 +68,7 @@ _start: nop
 	mov ax, [Temp1]
 	mov [J], ax
 
-	JMP W1
+	jmp W1
 
 L1: nop
 
@@ -82,11 +82,16 @@ L1: nop
 	int 80h
 
 
+fini:
+	mov	eax, sys_exit
+	xor	ebx, ebx
+	int	80h
+
 PrintString:
 	push	ax
 	push	dx
 	mov	eax, 4
-	mov	edx, 1
+	mov	ebx, 1
 
 	mov	ecx, userMsg
 	mov	edx, lenUserMsg
@@ -109,18 +114,21 @@ GetAnInteger:
 	int	80h
 
 ConvertStringToInteger:
-	mov	eax, 0
+	mov	ax, 0
 	mov	[ReadInt],ax
 	mov	ecx, num
 	mov	bx, 0
 	mov	bl, byte [ecx]
-Next:	sub	bl,'0'
+Next:
+	sub	bl,'0'
 	mov	ax, [ReadInt]
 	mov	dx, 10
 	mul	dx
 	add	ax, bx
 	mov	[ReadInt],ax
 
+	mov bx, 0
+	add ecx, 1
 	mov	bl, byte [ecx]
 
 	cmp	bl,0xA
@@ -129,7 +137,8 @@ Next:	sub	bl,'0'
 
 ConvertIntegerToString:
 	mov	ebx, ResultValue + 4
-ConvertLoop:	sub	dx, dx
+ConvertLoop:
+	sub	dx, dx
 	mov	cx, 10
 	div	cx
 	add	dl, '0'
@@ -139,7 +148,3 @@ ConvertLoop:	sub	dx, dx
 	jge	ConvertLoop
 	ret
 
-fini:
-	mov	eax, sys_exit
-	xor	ebx, ebx
-	int	80h

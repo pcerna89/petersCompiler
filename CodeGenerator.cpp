@@ -30,12 +30,12 @@ void CodeGenerator::generateCode(){
         for (const auto &text : textSection){
             outputFile << text << endl;
         }
-
+        outputFile << finiConfiguration();
 
         outputFile << printString() << endl;
         outputFile << getAnInteger() << endl;
         outputFile << convertIntegerToString() << endl;
-        outputFile << finiConfiguration();
+        
         outputFile.close();
     }
     else {
@@ -55,14 +55,14 @@ string CodeGenerator::finiConfiguration(){
     return  "fini:\n"
             "\tmov\teax, sys_exit\n"
             "\txor\tebx, ebx\n"
-            "\tint\t80h\n";
+            "\tint\t80h\n\n";
 }
 string CodeGenerator::printString(){
     return "PrintString:\n"
             "\tpush\tax\n"
             "\tpush\tdx\n"
             "\tmov\teax, 4\n"
-            "\tmov\tedx, 1\n"
+            "\tmov\tebx, 1\n"
             "\n"
             "\tmov\tecx, userMsg\n"
             "\tmov\tedx, lenUserMsg\n"
@@ -87,18 +87,20 @@ string CodeGenerator::getAnInteger(){
             "\tint\t80h\n"
             "\n"
             "ConvertStringToInteger:\n"
-            "\tmov\teax, 0\n"
+            "\tmov\tax, 0\n"
             "\tmov\t[ReadInt],ax\n"
             "\tmov\tecx, num\n"
             "\tmov\tbx, 0\n"
             "\tmov\tbl, byte [ecx]\n"
-            "Next:\tsub\tbl,'0'\n"
+            "Next:\n\tsub\tbl,'0'\n"
             "\tmov\tax, [ReadInt]\n"
             "\tmov\tdx, 10\n"
             "\tmul\tdx\n"
             "\tadd\tax, bx\n"
             "\tmov\t[ReadInt],ax\n"
             "\n"
+            "\tmov bx, 0\n"
+            "\tadd ecx, 1\n"
             "\tmov\tbl, byte [ecx]\n"
             "\n"
             "\tcmp\tbl,0xA\n"
@@ -109,7 +111,7 @@ string CodeGenerator::getAnInteger(){
 string CodeGenerator::convertIntegerToString(){
     return "ConvertIntegerToString:\n"
             "\tmov\tebx, ResultValue + 4\n"
-            "ConvertLoop:"
+            "ConvertLoop:\n"
             "\tsub\tdx, dx\n"
             "\tmov\tcx, 10\n"
             "\tdiv\tcx\n"
@@ -202,6 +204,8 @@ void CodeGenerator::generateTextSection(){
         textSection.push_back(generateQuadAssembly(quad));
 
     }
+    
+
 }
 string CodeGenerator::generateQuadAssembly(const Quad &quad){
     stringstream assembly;
@@ -274,7 +278,7 @@ string CodeGenerator::generateQuadAssembly(const Quad &quad){
     }
     // while quad
     else if (quad.op == "WHILE"){
-        assembly << "\t" << quad.arg1 << ":\n";
+        assembly << quad.arg1 << ":\n";
     }
     // do quad
     else if (quad.op == "DO"){
@@ -286,7 +290,7 @@ string CodeGenerator::generateQuadAssembly(const Quad &quad){
         assembly << "nop\n";
     }
     else if (quad.op.substr(0, 1) == "W"){
-        assembly << "\tJMP " << quad.op << "\n";
+        assembly << "\tjmp " << quad.op << "\n";
     }
     // read quad
     else if (quad.op == "CIN"){
