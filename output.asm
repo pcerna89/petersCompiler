@@ -26,15 +26,16 @@ section .data
 	numEnd			equ	$-num
 
 
-	Lit10			DW	10
-	Lit1			DW	1
+	M			DW	7
 section .bss
 	TempChar	RESB	1
 	testchar	RESB	1
 	ReadInt		RESW	1
 	tempint		RESW	1
 	negflag		RESB	1
-	J		RESW	1
+	A		RESW	1
+	B		RESW	1
+	C		RESW	1
 	Temp1		RESW	1
 	Temp2		RESW	1
 	Temp3		RESW	1
@@ -53,26 +54,29 @@ _start: nop
 	call PrintString
 	call GetAnInteger
 	mov ax, [ReadInt]
-	mov [J], ax
+	mov [A], ax
 
-W1:
+	call PrintString
+	call GetAnInteger
+	mov ax, [ReadInt]
+	mov [B], ax
 
-	mov ax, [J]
-	cmp ax, [Lit10] 
-	JGE L1
+	call PrintString
+	call GetAnInteger
+	mov ax, [ReadInt]
+	mov [C], ax
 
-	mov ax, [J]
-	add ax, [Lit1]
-	mov [Temp1], ax
 
-	mov ax, [Temp1]
-	mov [J], ax
+	mov ax, [A]
+	cmp ax, [B] 
+	JLE L1
 
-	jmp W1
 
-L1: nop
+	mov ax, [A]
+	cmp ax, [C] 
+	JLE L2
 
-	mov ax, [J]
+	mov ax, [A]
 	call ConvertIntegerToString
 
 	mov eax, 4
@@ -81,6 +85,59 @@ L1: nop
 	mov edx, ResultEnd
 	int 80h
 
+
+	JMP L3
+
+L2: nop
+
+	mov ax, [C]
+	call ConvertIntegerToString
+
+	mov eax, 4
+	mov ebx, 1
+	mov ecx, Result
+	mov edx, ResultEnd
+	int 80h
+
+
+L3: nop
+
+	JMP L4
+
+L1: nop
+
+
+	mov ax, [B]
+	cmp ax, [C] 
+	JLE L5
+
+	mov ax, [B]
+	call ConvertIntegerToString
+
+	mov eax, 4
+	mov ebx, 1
+	mov ecx, Result
+	mov edx, ResultEnd
+	int 80h
+
+
+	JMP L6
+
+L5: nop
+
+	mov ax, [C]
+	call ConvertIntegerToString
+
+	mov eax, 4
+	mov ebx, 1
+	mov ecx, Result
+	mov edx, ResultEnd
+	int 80h
+
+
+L6: nop
+
+L4: nop
 
 fini:
 	mov	eax, sys_exit

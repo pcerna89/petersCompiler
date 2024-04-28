@@ -129,7 +129,7 @@ vector<Symbol> Symbolizer::symbolize(){
             case SYM_CONST_ASSIGN:
                 break;
             case SYM_CONST_ACC:
-                value = token.lexeme; 
+                value = token.lexeme.substr(3); 
                 addSymbol(symbol, classification, value, dataAddress, "DS"); 
                 dataAddress += 2; 
                 break;
