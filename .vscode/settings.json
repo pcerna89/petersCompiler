@@ -11,6 +11,8 @@
         "xlocbuf": "cpp",
         "ostream": "cpp",
         "iostream": "cpp",
-        "stack": "cpp"
+        "stack": "cpp",
+        "sstream": "cpp",
+        "set": "cpp"
     }
 }

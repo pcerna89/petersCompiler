@@ -282,8 +282,21 @@ void Parser::parse(){ // main parse loop
             cout << "Encountered keyword: " << currentToken.lexeme << ". Skipping tokens until ';'" << endl;
             continue;
         }
-
-        if (!skipTokenUntilDelimiter && identifyTokenToParserClass(currentToken) == NON_OP){
+        if (currentToken.lexeme == "CIN"){
+            generateReadQuad();
+            skipTokenUntilDelimiter = true;
+            cout << "Encountered 'CIN'. Skipping token." << endl;
+            continue;
+        }
+        if (currentToken.lexeme == "COUT"){
+            generateWriteQuad();
+            skipTokenUntilDelimiter = true;
+            cout << "Encountered 'CIN'. Skipping token." << endl;
+            continue;
+        }
+        
+        // if we're not skipping and we identify the nonop
+        if (!skipTokenUntilDelimiter && identifyTokenToParserClass(currentToken) == NON_OP){ 
             if (currentToken.lexeme != ";" && currentToken.lexeme != ","){
                 tokenStack.push(currentToken);
                 cout << "Pushed non-operator onto the stack: '" << currentToken.lexeme << "'." << endl;
@@ -292,23 +305,17 @@ void Parser::parse(){ // main parse loop
                 cout << "Enountered a ';' or ','. Skipping token." << endl;
             }
         }
-
-
+        handleOperator(currentToken);
+        handleSpecialCases(currentToken);
         if (currentToken.lexeme == "}" && tokenStack.top().lexeme == "THEN" && peekNextToken().lexeme != "ELSE"){
             popIfThen(currentToken);
         }
-        
         if (currentToken.lexeme == "}" && tokenStack.top().lexeme == "ELSE"){
             popIfThenElse(currentToken);
         }
-
         if (currentToken.lexeme == "}" && tokenStack.top().lexeme == "DO"){
             popWhileDo(currentToken);
         }
-    
-      
-        handleOperator(currentToken);
-        handleSpecialCases(currentToken);
         handleIfThenElse(currentToken);
         handleWhileDo(currentToken);
         printStack(tokenStack);
@@ -705,6 +712,28 @@ void Parser::generateWhileDoQuad(){
     
 }
 
+void Parser::generateReadQuad(){
+    string arg1 = peekNextToken().lexeme;
+    Quad readQuad = {"CIN", arg1, "?", "?"};
+    quadStack.push(readQuad);
+    cout << "Generated Read Quad: '" << readQuad.op << 
+            "' '" << readQuad.arg1 << 
+            "' '" << readQuad.arg2 << 
+            "' '" << readQuad.result << 
+            "'." << endl;
+}
+
+void Parser::generateWriteQuad(){
+    string arg1 = peekNextToken().lexeme;
+    Quad writeQuad = {"COUT", arg1, "?", "?"};
+    quadStack.push(writeQuad);
+    cout << "Generated Write Quad: '" << writeQuad.op << 
+            "' '" << writeQuad.arg1 << 
+            "' '" << writeQuad.arg2 << 
+            "' '" << writeQuad.result << 
+            "'." << endl;
+}
+
 Token Parser::peekNextToken(){
     if (currentIndex + 1 < tokens.size()){
         //cout << "Peeked at next token: '" << tokens[currentIndex + 1].lexeme << "'." << endl;
@@ -810,8 +839,8 @@ ParserClass Parser::identifyTokenToParserClass(const Token &token){
     if (token.lexeme == "CALL") return PARSE_CALL;
     if (token.lexeme == "PROCEDURE") return PARSE_PROC;
     if (token.lexeme == "ELSE") return PARSE_ELSE;
-    if (token.lexeme == "GET") return PARSE_GET;
-    if (token.lexeme == "PUT") return PARSE_PUT;
+    if (token.lexeme == "READ") return PARSE_WRITE;
+    if (token.lexeme == "WRITE") return PARSE_READ;
     if (token.lexeme == ",") return PARSE_COMMA;
     else return NON_OP;
 

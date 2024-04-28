@@ -156,7 +156,7 @@ vector<Symbol> Symbolizer::symbolize(){
             case SYM_INT_ACC:
                 symbol = token.lexeme;
                 classification = "NUMERIC LITERAL";
-                value = token.lexeme;
+                value = token.lexeme.substr(3);
                 segment = "DS";
                 addSymbol(symbol, classification, value, dataAddress, "DS");
                 dataAddress += 2;

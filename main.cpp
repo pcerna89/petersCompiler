@@ -6,6 +6,7 @@
 #include "SymbolTable.h"
 #include "FileReader.h"
 #include "Parser.h"
+#include "CodeGenerator.h"
 using namespace std;
 
 int main(){
@@ -41,6 +42,10 @@ int main(){
         symbolFile << left << setw(30) << symbol.symbol << setw(20) << symbol.classification << setw(10) << symbol.value << setw(10) << symbol.address << symbol.segment << endl;
     }
     symbolFile.close();
-    
+
+    CodeGenerator codeGenerator(parser.getQuadStack(), symbols);
+    codeGenerator.generateCode();
+
+
     return 0;
 }

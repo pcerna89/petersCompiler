@@ -8,6 +8,7 @@
 #include <algorithm>
 using namespace std;
 
+// using enums for clarity 
 enum ParserClass { // our different parser states
     PARSE_SEMI,
     PARSE_ASSIGN,
@@ -34,8 +35,8 @@ enum ParserClass { // our different parser states
     PARSE_CALL,
     PARSE_PROC,
     PARSE_COMMA,
-    PARSE_GET,
-    PARSE_PUT,
+    PARSE_READ,
+    PARSE_WRITE,
     NON_OP
 };
 
@@ -54,6 +55,9 @@ class Parser {
     public:
     Parser(const vector<Token> &tokens); // constructor to take our vector of tokens
     void parse(); // main parsing function
+    stack<Quad> getQuadStack() const {
+        return quadStack;
+    } // returns the quad stack
 
     private:
     stack<Token> tokenStack; // stack to hold our tokens
@@ -100,6 +104,8 @@ class Parser {
     void generateWhileQuad();
     void generateDoQuad();
     void generateWhileDoQuad();
+    void generateReadQuad();
+    void generateWriteQuad();
 
 };
 

@@ -131,7 +131,7 @@ vector<Token> Lexer::tokenize(){
                 positionInContent++;
                 break;
             case INT_ACCEPT:
-                addToken(lexerStateToString(INT_ACCEPT), currentLexeme);
+                addToken(lexerStateToString(INT_ACCEPT), "Lit" + currentLexeme);
                 currentLexeme.clear();
                 currentState = START;
                 break;
