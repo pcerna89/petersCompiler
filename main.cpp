@@ -12,7 +12,7 @@ using namespace std;
 int main(){
     initializeStateTransitionTable();
 
-    Lexer lexer("pgm9.txt"); // create a lexer object
+    Lexer lexer("pgm10.txt"); // create a lexer object
     vector<Token> tokens = lexer.tokenize(); // tokenize the input file
 
     Parser parser(tokens); // create a parser with the tokens from lexer 

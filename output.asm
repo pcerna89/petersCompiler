@@ -26,16 +26,15 @@ section .data
 	numEnd			equ	$-num
 
 
-	M			DW	7
+	Lit1			DW	1
 section .bss
 	TempChar	RESB	1
 	testchar	RESB	1
 	ReadInt		RESW	1
 	tempint		RESW	1
 	negflag		RESB	1
-	A		RESW	1
-	B		RESW	1
-	C		RESW	1
+	N		RESW	1
+	Nfact		RESW	1
 	Temp1		RESW	1
 	Temp2		RESW	1
 	Temp3		RESW	1
@@ -54,64 +53,36 @@ _start: nop
 	call PrintString
 	call GetAnInteger
 	mov ax, [ReadInt]
-	mov [A], ax
+	mov [N], ax
 
-	call PrintString
-	call GetAnInteger
-	mov ax, [ReadInt]
-	mov [B], ax
+	mov ax, [Lit1]
+	mov [Nfact], ax
 
-	call PrintString
-	call GetAnInteger
-	mov ax, [ReadInt]
-	mov [C], ax
+W1:
 
-
-	mov ax, [A]
-	cmp ax, [B] 
+	mov ax, [N]
+	cmp ax, [Lit1] 
 	JLE L1
 
+	mov ax, [Nfact]
+	mul word [N]
+	mov [Temp1], ax
 
-	mov ax, [A]
-	cmp ax, [C] 
-	JLE L2
+	mov ax, [Temp1]
+	mov [Nfact], ax
 
-	mov ax, [A]
-	call ConvertIntegerToString
+	mov ax, [N]
+	sub ax, [Lit1]
+	mov [Temp2], ax
 
-	mov eax, 4
-	mov ebx, 1
-	mov ecx, Result
-	mov edx, ResultEnd
-	int 80h
+	mov ax, [Temp2]
+	mov [N], ax
 
-
-	JMP L3
-
-L2: nop
-
-	mov ax, [C]
-	call ConvertIntegerToString
-
-	mov eax, 4
-	mov ebx, 1
-	mov ecx, Result
-	mov edx, ResultEnd
-	int 80h
-
-
-L3: nop
-
-	JMP L4
+	jmp W1
 
 L1: nop
 
-
-	mov ax, [B]
-	cmp ax, [C] 
-	JLE L5
-
-	mov ax, [B]
+	mov ax, [Nfact]
 	call ConvertIntegerToString
 
 	mov eax, 4
@@ -120,24 +91,6 @@ L1: nop
 	mov edx, ResultEnd
 	int 80h
 
-
-	JMP L6
-
-L5: nop
-
-	mov ax, [C]
-	call ConvertIntegerToString
-
-	mov eax, 4
-	mov ebx, 1
-	mov ecx, Result
-	mov edx, ResultEnd
-	int 80h
-
-
-L6: nop
-
-L4: nop
 
 fini:
 	mov	eax, sys_exit
