@@ -1,22 +1,22 @@
 CLASS BurrisProgram3Integers{
-    VAR INT1, INT2, INT3, LARGEST;
-    CIN INT1;
-    CIN INT2;
-    CIN INT3;
-    IF INT1 > INT2 THEN {
-        IF INT1 > INT3 THEN {
-            LARGEST = INT1;
+    VAR A, B, C, LARGEST;
+    CIN A;
+    CIN B;
+    CIN C;
+    IF A > B THEN {
+        IF A > C THEN {
+            LARGEST = A;
         }
         ELSE {
-            LARGEST = INT3; 
+            LARGEST = C; 
         }
     }
     ELSE {
-        IF INT2 > INT3 THEN {
-            LARGEST = INT2; 
+        IF B > C THEN {
+            LARGEST = B; 
         }
         ELSE {
-            LARGEST = INT3;
+            LARGEST = C;
         }
     }
     COUT LARGEST;

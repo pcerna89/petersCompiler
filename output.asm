@@ -26,10 +26,9 @@ section .data
 	numEnd			equ	$-num
 
 
-	J			DW	1
-	Lit1			DW	1
+	C			DW	3
+	Lit10			DW	10
 	Lit2			DW	2
-	Lit3			DW	3
 	Lit4			DW	4
 section .bss
 	TempChar	RESB	1
@@ -39,10 +38,9 @@ section .bss
 	negflag		RESB	1
 	A		RESW	1
 	B		RESW	1
-	C		RESW	1
-	D		RESW	1
-	E		RESW	1
-	ANSWER		RESW	1
+	Bob		RESW	1
+	Jane		RESW	1
+	ANS		RESW	1
 	Temp1		RESW	1
 	Temp2		RESW	1
 	Temp3		RESW	1
@@ -71,104 +69,49 @@ _start: nop
 	call PrintString
 	call GetAnInteger
 	mov ax, [ReadInt]
-	mov [C], ax
+	mov [Bob], ax
 
 	call PrintString
 	call GetAnInteger
 	mov ax, [ReadInt]
-	mov [D], ax
+	mov [Jane], ax
 
-	call PrintString
-	call GetAnInteger
-	mov ax, [ReadInt]
-	mov [E], ax
-
-W1:
-
-	mov ax, [A]
-	cmp ax, [J] 
-	JLE L1
-
-W2:
-
-	mov ax, [B]
-	cmp ax, [A] 
-	JLE L2
-
-W3:
-
-	mov ax, [C]
-	cmp ax, [B] 
-	JLE L3
-
-W4:
-
-	mov ax, [D]
-	cmp ax, [C] 
-	JLE L4
-
-W5:
-
-	mov ax, [E]
-	cmp ax, [D] 
-	JLE L5
-
-	mov ax, [E]
-	sub ax, [Lit1]
+	mov ax, [Bob]
+	add ax, [Jane]
 	mov [Temp1], ax
 
 	mov ax, [Temp1]
-	mov [E], ax
-
-	jmp W5
-
-L5: nop
-
-	mov ax, [D]
-	sub ax, [Lit2]
+	sub ax, [Lit10]
 	mov [Temp2], ax
 
+	mov dx, 0
 	mov ax, [Temp2]
-	mov [D], ax
-
-	jmp W4
-
-L4: nop
-
-	mov ax, [C]
-	sub ax, [Lit3]
+	mov bx, [Lit2]
+	div bx
 	mov [Temp3], ax
 
 	mov ax, [Temp3]
-	mov [C], ax
-
-	jmp W3
-
-L3: nop
-
-	mov ax, [B]
-	sub ax, [Lit4]
+	mul word [Lit4]
 	mov [Temp4], ax
 
-	mov ax, [Temp4]
-	mov [B], ax
-
-	jmp W2
-
-L2: nop
-
 	mov ax, [A]
-	sub ax, [Lit1]
+	mul word [Temp4]
 	mov [Temp5], ax
 
+	mov ax, [B]
+	add ax, [C]
+	mov [Temp6], ax
+
+	mov dx, 0
 	mov ax, [Temp5]
-	mov [ANSWER], ax
+	mov bx, [Temp6]
+	div bx
+	mov [Temp7], ax
 
-	jmp W1
+	mov ax, [Temp7]
+	mov [ANS], ax
 
-L1: nop
-
-	mov ax, [ANSWER]
+	mov ax, [ANS]
 	call ConvertIntegerToString
 
 	mov eax, 4
