@@ -4,7 +4,6 @@
 #include "Lexer.h"
 #include <cctype>
 #include <algorithm>
-
 using namespace std;
 
 // initializes the lexer with the filename

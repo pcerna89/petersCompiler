@@ -1,6 +1,5 @@
 
 // main.cpp by Peter Cerna 
-// test
 #include "StateTransitionTable.h"
 #include "Lexer.h"
 #include "SymbolTable.h"
@@ -12,7 +11,7 @@ using namespace std;
 int main(){
     initializeStateTransitionTable();
 
-    Lexer lexer("pgm10.txt"); // create a lexer object
+    Lexer lexer("BobJane.txt"); // create a lexer object
     vector<Token> tokens = lexer.tokenize(); // tokenize the input file
 
     Parser parser(tokens); // create a parser with the tokens from lexer 
@@ -45,7 +44,6 @@ int main(){
 
     CodeGenerator codeGenerator(parser.getQuadStack(), symbols);
     codeGenerator.generateCode();
-
 
     return 0;
 }

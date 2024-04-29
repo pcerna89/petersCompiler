@@ -1,7 +1,6 @@
 // FileReader.cpp by Peter Cerna
 #include "FileReader.h"
 #include <iostream>
-
 using namespace std;
 
 FileReader::FileReader(const string &filename){ 

@@ -2,41 +2,60 @@ Token List
 Lexemes:                      Types:
 -----------------------------
 CLASS                         $CLASS
-pgm10                         Identifier
+BobJane                       Identifier
 {                             $LB
+CONST                         $CONST
+c                             Identifier
+=                             $Assign
+Lit3                          Numeric Literal
+;                             $Semi
 VAR                           $VAR
-N                             Identifier
+a                             Identifier
 ,                             $Comma
-Nfact                         Identifier
+b                             Identifier
+,                             $Comma
+Bob                           Identifier
+,                             $Comma
+Jane                          Identifier
+,                             $Comma
+ans                           Identifier
 ;                             $Semi
 CIN                           Identifier
-N                             Identifier
+a                             Identifier
 ;                             $Semi
-Nfact                         Identifier
-=                             $Assign
-Lit1                          Numeric Literal
+CIN                           Identifier
+b                             Identifier
 ;                             $Semi
-WHILE                         $WHILE
-N                             Identifier
->                             $Greater
-Lit1                          Numeric Literal
-DO                            $DO
-{                             $LB
-Nfact                         Identifier
+CIN                           Identifier
+Bob                           Identifier
+;                             $Semi
+CIN                           Identifier
+Jane                          Identifier
+;                             $Semi
+ans                           Identifier
 =                             $Assign
-Nfact                         Identifier
 *                             $Mul
-N                             Identifier
-;                             $Semi
-N                             Identifier
-=                             $Assign
-N                             Identifier
+(                             $LP
+(                             $LP
+Bob                           Identifier
++                             $Add
+Jane                          Identifier
 -                             $Sub
-Lit1                          Numeric Literal
-;                             $Semi
-}                             $RB
+Lit10                         Numeric Literal
+)                             $RP
+/                             $Div
+Lit2                          Numeric Literal
+*                             $Mul
+Lit4                          Numeric Literal
+)                             $RP
+/                             $Div
+(                             $LP
+b                             Identifier
++                             $Add
+c                             Identifier
+)                             $RP
 COUT                          Identifier
-Nfact                         Identifier
+ans                           Identifier
 ;                             $Semi
 }                             $RB
 EOF                           EOF

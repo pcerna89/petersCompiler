@@ -1,0 +1,12 @@
+CLASS BobJane {
+    CONST c = 3;
+    VAR a, b, Bob, Jane, ans;
+    CIN a;
+    CIN b;
+    CIN Bob;
+    CIN Jane;
+
+    ans = * ((Bob + Jane - 10) / 2 * 4)/(b + c)
+    COUT ans;
+
+}

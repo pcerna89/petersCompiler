@@ -4,7 +4,6 @@
 
 #include <fstream>
 #include <string>
-
 using namespace std;
 
 class FileReader { // handles file input
