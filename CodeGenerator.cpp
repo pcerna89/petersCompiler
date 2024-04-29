@@ -1,9 +1,7 @@
-
 // CodeGenerator.cpp created by Peter Cerna
 #include "CodeGenerator.h"
 #include <fstream>
 #include <algorithm>
-
 
 CodeGenerator::CodeGenerator(const stack<Quad> &quads, const vector<Symbol> &symbols) : quads(quads), symbols(symbols){
 }
@@ -311,8 +309,6 @@ string CodeGenerator::generateQuadAssembly(const Quad &quad){
         assembly << "\tmov edx, ResultEnd\n";
         assembly << "\tint 80h\n\n";
     }
-
-
     return assembly.str();
 }
 void CodeGenerator::printQuadStack(){
@@ -331,5 +327,3 @@ void CodeGenerator::printQuadStack(){
     cout << "----------------------" << endl;
     cout << endl;
 }
-
-

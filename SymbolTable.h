@@ -1,6 +1,4 @@
-
 // SymbolTable.h by Peter Cerna
-
 #ifndef SYMBOL_TABLE_H
 #define SYMBOL_TABLE_H
 #include <iostream>

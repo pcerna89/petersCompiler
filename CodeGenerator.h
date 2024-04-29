@@ -1,8 +1,6 @@
-
 // CodeGenerator.h created by Peter Cerna
 #ifndef CODE_GENERATOR_H
 #define CODE_GENERATOR_H
-
 
 #include "Parser.h"
 #include <vector>
@@ -10,7 +8,6 @@
 #include <set>
 #include <string>
 #include "SymbolTable.h"
-
 using namespace std;
 
 class CodeGenerator{
@@ -37,6 +34,5 @@ class CodeGenerator{
     vector<string> textSection; // vector of text section 
     set<string> numericLiterals;
 };
-
 
 #endif // CODE_GEN_H

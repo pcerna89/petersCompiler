@@ -1,11 +1,10 @@
 // Parser.cpp created by Peter Cerna
 #include "Parser.h"
-
 using namespace std;
 
 char ParserTransitionTable[PARSER_STATES][PARSER_STATES];
 
-// fill with a for loop
+// our operator precedence table
 void initializeParserTransitionTable(){
     ParserTransitionTable[PARSE_SEMI][PARSE_ASSIGN] = '<';
     ParserTransitionTable[PARSE_SEMI][PARSE_LEFTBRACE] = '<';
@@ -202,7 +201,7 @@ void initializeParserTransitionTable(){
 Parser::Parser(const vector<Token> &tokens) : tokens(tokens){
 }
 
-void printStack(const stack<Token> &tokenStack){ /// change later so it's in the header file
+void printStack(const stack<Token> &tokenStack){ 
     stack<Token> printStack = tokenStack; // copy the stack to preserve the original
     vector<Token> tempVector; //
 
@@ -235,7 +234,6 @@ void Parser::printQuadStack(){
     cout << "----------------------" << endl;
     cout << endl;
 }
-
 
 void Parser::parse(){ // main parse loop
     initializeParserTransitionTable();
@@ -305,8 +303,8 @@ void Parser::parse(){ // main parse loop
                 cout << "Enountered a ';' or ','. Skipping token." << endl;
             }
         }
-        handleOperator(currentToken);
-        handleSpecialCases(currentToken);
+        handleOperator(currentToken); // handle the operator
+        handleSpecialCases(currentToken); // handle special cases
         if (currentToken.lexeme == "}" && tokenStack.top().lexeme == "THEN" && peekNextToken().lexeme != "ELSE"){
             popIfThen(currentToken);
         }
@@ -316,7 +314,7 @@ void Parser::parse(){ // main parse loop
         if (currentToken.lexeme == "}" && tokenStack.top().lexeme == "DO"){
             popWhileDo(currentToken);
         }
-        handleIfThenElse(currentToken);
+        handleIfThenElse(currentToken);  
         handleWhileDo(currentToken);
         printStack(tokenStack);
     }
@@ -844,6 +842,4 @@ ParserClass Parser::identifyTokenToParserClass(const Token &token){
     if (token.lexeme == "WRITE") return PARSE_READ;
     if (token.lexeme == ",") return PARSE_COMMA;
     else return NON_OP;
-
-
 }

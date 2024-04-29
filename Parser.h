@@ -39,9 +39,9 @@ enum ParserClass { // our different parser states
     PARSE_WRITE,
     NON_OP
 };
-
 const int PARSER_STATES = 28;
 extern char ParserTransitionTable[PARSER_STATES][PARSER_STATES];
+// operator precedence table
 void initializeParserTransitionTable();
 
 struct Quad { // stores the quadruple
@@ -71,7 +71,6 @@ class Parser {
     stack<string> endStack; // stack to hold our else ends
     size_t currentIndex; // current index of the token
     stack<string> whileStack; // stack to hold our whiles
-    
 
     // parser helper functions
     void handleOperator(const Token &incomingToken); // handles the operator
@@ -106,8 +105,5 @@ class Parser {
     void generateWhileDoQuad();
     void generateReadQuad();
     void generateWriteQuad();
-
 };
-
-
 #endif // PARSER_H

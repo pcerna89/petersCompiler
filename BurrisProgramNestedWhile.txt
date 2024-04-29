@@ -7,19 +7,29 @@ CLASS BurrisProgramNestedWhile {
     CIN D;
     CIN E;
     WHILE A > J DO {
-        WHILE B > A DO {
-            WHILE C > B DO {
-                WHILE D > C DO {
-                    WHILE E > D DO{
+        WHILE B > J DO {
+            WHILE C > J DO {
+                WHILE D > J DO {
+                    WHILE E > J DO{
                         E = E - 1;
+                        ANSWER = E;
+                        COUT E;
                     }
-                    D = D - 2;
+                    D = D - 1;
+                    ANSWER = D;
+                    COUT D;
                 }
-                C = C - 3;
+                C = C - 1;
+                ANSWER = C;
+                COUT C;
             }
             B = B - 4;
+            ANSWER = B;
+            COUT B;
         }
-        ANSWER = A - 1;
+        A = A - 1;
+        ANSWER = A;
+        COUT A;
     }
     COUT ANSWER;
 }
