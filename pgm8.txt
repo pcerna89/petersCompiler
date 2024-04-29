@@ -1,8 +1,0 @@
-CLASS pgm8{
-    VAR J;
-    CIN J;
-    WHILE J < 10 DO{
-        J = J + 1;
-    }
-    COUT J;
-}

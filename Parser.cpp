@@ -399,6 +399,7 @@ void Parser::handleSpecialCases(const Token &currentToken){
                     tempStack.pop();
                 }
             }
+            mostRecentOperatorUsed = findLastLowerOperator();
         }
         else {
             tokenStack.push(topToken); // push back the token if it's not the special case

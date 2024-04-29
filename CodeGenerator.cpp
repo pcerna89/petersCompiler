@@ -226,7 +226,7 @@ string CodeGenerator::generateQuadAssembly(const Quad &quad){
         assembly << "\tmov [" << quad.result << "], ax\n";
     }
     else if (quad.op == "/"){
-        assembly << "\tdx, 0\n";
+        assembly << "\tmov dx, 0\n";
         assembly << "\tmov ax, [" << quad.arg1 << "]\n";
         assembly << "\tmov bx, [" << quad.arg2 << "]\n";
         assembly <<"\tdiv bx\n";

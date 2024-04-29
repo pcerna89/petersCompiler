@@ -1,0 +1,10 @@
+CLASS BurrisProgramFactorial{
+    VAR N, FACTORIAL;
+    CIN N;
+    FACTORIAL = 1;
+    WHILE N > 1 DO {
+        FACTORIAL = FACTORIAL * N;
+        N = N - 1;
+    }
+    COUT FACTORIAL;
+}

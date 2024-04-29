@@ -1,0 +1,28 @@
+CLASS BurrisProgramNestedIf{
+    VAR A, B, C, D, E, F;
+    CIN A;
+    CIN B;
+    CIN C;
+    CIN D;
+    CIN E;
+    CIN F;
+    IF A < B THEN {
+        IF A < C THEN {
+            IF A < D THEN {
+                IF A < E THEN {
+                    IF A < F THEN {
+                        A = A + 1;
+                    }
+                    A = A + 1;
+                }
+                A = A + 1;
+            }
+            A = A + 1;
+        }
+        A = A + 1;
+        COUT A;
+    }
+    ELSE {
+        COUT A;
+    }
+}

@@ -1,23 +1,26 @@
 
 Symbol Table
 Symbol:                       Classification:     Value:    Address:  Segment:
-BobJane                       $PROGRAM NAME                 0         CS
-c                             CONST VAR           3         0         DS
-a                             VAR                 ?         2         DS
-b                             VAR                 ?         4         DS
-Bob                           VAR                 ?         6         DS
-Jane                          VAR                 ?         8         DS
-ans                           VAR                 ?         10        DS
-Lit10                         NUMERIC LITERAL     10        12        DS
-Lit2                          NUMERIC LITERAL     2         14        DS
-Lit4                          NUMERIC LITERAL     4         16        DS
-Temp1                         VAR(int)                      18        DS
-Temp2                         VAR(int)                      20        DS
-Temp3                         VAR(int)                      22        DS
-Temp4                         VAR(int)                      24        DS
-Temp5                         VAR(int)                      26        DS
-Temp6                         VAR(int)                      28        DS
-Temp7                         VAR(int)                      30        DS
-Temp8                         VAR(int)                      32        DS
-Temp9                         VAR(int)                      34        DS
-Temp10                        VAR(int)                      36        DS
+BurrisProgramNestedWhile      $PROGRAM NAME                 0         CS
+J                             CONST VAR           1         0         DS
+A                             VAR                 ?         2         DS
+B                             VAR                 ?         4         DS
+C                             VAR                 ?         6         DS
+D                             VAR                 ?         8         DS
+E                             VAR                 ?         10        DS
+ANSWER                        VAR                 ?         12        DS
+Lit1                          NUMERIC LITERAL     1         14        DS
+Lit2                          NUMERIC LITERAL     2         16        DS
+Lit3                          NUMERIC LITERAL     3         18        DS
+Lit4                          NUMERIC LITERAL     4         20        DS
+Lit1                          NUMERIC LITERAL     1         22        DS
+Temp1                         VAR(int)                      24        DS
+Temp2                         VAR(int)                      26        DS
+Temp3                         VAR(int)                      28        DS
+Temp4                         VAR(int)                      30        DS
+Temp5                         VAR(int)                      32        DS
+Temp6                         VAR(int)                      34        DS
+Temp7                         VAR(int)                      36        DS
+Temp8                         VAR(int)                      38        DS
+Temp9                         VAR(int)                      40        DS
+Temp10                        VAR(int)                      42        DS

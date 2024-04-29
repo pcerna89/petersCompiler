@@ -1,0 +1,12 @@
+CLASS BurrisProgram2Integers{
+    VAR INT1, INT2, LARGEST;
+    CIN INT1;
+    CIN INT2;
+    IF INT1 > INT2 THEN {
+        LARGEST = INT1;
+    }
+    ELSE {
+        LARGEST = INT2;
+    }
+    COUT LARGEST;
+}

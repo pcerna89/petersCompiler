@@ -1,0 +1,25 @@
+CLASS BurrisProgramNestedWhile {
+    CONST J = 1;
+    VAR A, B, C, D, E, ANSWER;
+    CIN A;
+    CIN B;
+    CIN C;
+    CIN D;
+    CIN E;
+    WHILE A > J DO {
+        WHILE B > A DO {
+            WHILE C > B DO {
+                WHILE D > C DO {
+                    WHILE E > D DO{
+                        E = E - 1;
+                    }
+                    D = D - 2;
+                }
+                C = C - 3;
+            }
+            B = B - 4;
+        }
+        ANSWER = A - 1;
+    }
+    COUT ANSWER;
+}
